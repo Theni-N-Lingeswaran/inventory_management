@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Sign Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="/assets/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/adminlte.css">
+  </head>
+  <body class="hold-transition login-page custom-bg-image">
+    <div class="login-box" style="margin-left: 750px;">
+      <div class="card card-outline card-primary">
+        <%= render "devise/shared/error_messages", resource: resource %>
+        <div class="card-body">
+          <p class="login-box-msg">Register a new membership</p>
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+            <div class="form-group input-group mb-3">
+              <%= f.text_field :contact_name, autofocus: true, autocomplete: 'contact_name', placeholder: 'Contact Name', class: 'form-control' %>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-id-card-alt"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group input-group mb-3">
+              <%= f.text_field :contact_number, autofocus: true, autocomplete: 'contact_number', placeholder: 'Contact Number', class: 'form-control' %>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-phone"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group input-group mb-3">
+              <%= f.email_field :email, autofocus: true, autocomplete: 'email', placeholder: 'Email', class: 'form-control' %>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group input-group mb-3">
+              <% if @minimum_password_length %>
+              <!-- <em>(<%= @minimum_password_length %> characters minimum)</em> -->
+              <% end %>
+              <%= f.password_field :password, autocomplete: 'new-password', placeholder: 'Password', class: 'form-control' %>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group input-group mb-3">
+              <%= f.password_field :password_confirmation, autocomplete: 'new-password', placeholder: 'Re-Password', class: 'form-control' %>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-8">
+                <div class="icheck-primary">
+                  <input type="checkbox" id="agreeTerms" name="terms" value="agree" checked="checked">
+                  <label for="agreeTerms">
+                   I agree to the <a href="#">terms</a>
+                  </label>
+                </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-4">
+                <%= f.submit "Register", class: 'btn btn-primary btn-block' %>
+              </div>
+              <!-- /.col -->
+            </div>
+          <%end%>
+
+          <!-- <div class="social-auth-links text-center">
+            <p>- OR -</p>
+            <a href="#" class="btn btn-block btn-primary">
+              <i class="fab fa-facebook mr-2"></i>
+              Sign up using Facebook
+            </a>
+            <a href="#" class="btn btn-block btn-danger">
+              <i class="fab fa-google-plus mr-2"></i>
+              Sign up using Google+
+            </a>
+          </div> -->
+          <!-- <a href="login.html" class="text-center">I already have a membership</a> -->
+          <%= render "devise/shared/links" %>
+        </div>
+      </div>
+    </div>
+    <script src="/assets/plugins/jquery/jquery.min.js"></script>
+    <script src="/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/adminlte.min.js"></script>
+    <script src="/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+
+    <script>
+      $(function () {
+        $.validator.setDefaults({
+          submitHandler: function (form) {
+            form.submit()
+          }
+        });
+        $('#new_user').validate({
+          rules: {
+            'user[contact_name]': {
+              required: true
+            },
+            'user[contact_number]': {
+              required: true,
+              number: true,
+              minlength: 10,
+              maxlength: 15,
+            },
+            'user[email]': {
+              required: true,
+              email:true
+            },
+            'user[password]': {
+              required: true
+            },
+            'user[password_confirmation]': {
+              required: true,
+              equalTo: '#user_password'
+            }
+          },
+          messages: {
+            'user[contact_name]': {
+              required: "Please enter a contact name"
+            },
+            'user[contact_number]': {
+              required: "Please enter a contact number",
+              number: "Please enter a vaild contact number",
+              minlength: "Please enter at least 10 characters",
+              maxlength: "Max 15 characters allowed"
+            },
+            'user[email]': {
+              required: "Please enter a email address",
+              email: "Please enter a vaild email address"
+            },
+            'user[password]': {
+              required: "Please provide a password"
+            },
+            'user[password_confirmation]': {
+              required: "Please provide a confirm password"
+            }
+          },
+          errorElement: 'div',
+          errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+          },
+          highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+          },
+          unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

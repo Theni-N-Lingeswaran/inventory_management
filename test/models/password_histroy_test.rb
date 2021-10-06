@@ -1,6 +1,6 @@
 require "test_helper"
 
-class SubCategoryTest < ActiveSupport::TestCase
+class PasswordHistroyTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

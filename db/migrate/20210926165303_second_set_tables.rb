@@ -1,6 +1,5 @@
 class SecondSetTables < ActiveRecord::Migration[6.1]
   def change
-    add_column :compliants, :total_amount, :string, null: true, limit: 10, after: :estimation_date
     create_table :side_panel_links do |t|
       t.string :link_name, null: false, limit: 500
       t.references :parent_link, null: true

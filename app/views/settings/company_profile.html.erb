@@ -1,7 +1,18 @@
 <div class="card-body">
-  <%= form_for(:customer, url: '/customers', :html => { :id => 'link_company' }) do |f| %>
-  	<%= f.hidden_field :exist_cust_id%>
-    <%= f.hidden_field :customer_name, id: 'customer_exist_name', name: 'customer_exist_name'%>
+  <%= form_for(current_user.customers.last, url: '/customers', method: 'POST', :html => { :id => 'link_company' }) do |f| %>
+    <%= f.hidden_field :exist_cust_id, value: current_user.customers.last&.id %>
+    <%= f.hidden_field :id, name: 'customer[update_data]'%>
+
+    <div class="card-body box-profile">
+      <div class="widget-user-image text-center">
+        <%if current_user.customers.last.customer_logo.attached?%>
+          <%= image_tag url_for(current_user.customers.last.customer_logo), class: 'img-circle elevation-2', style: 'height:160px; width:160px;'%>
+        <%else%>
+          <img class="img-circle elevation-2" src="/assets/avatar.png" alt="User Avatar">
+        <%end%>
+      </div>
+    </div>
+
     <div class="row">
       <label for="inputName" class="col-sm-2 col-form-label">Company Name</label>
       <div class="form-group col-sm-10">
@@ -31,8 +42,15 @@
     </div>
 
     <div class="row">
+      <label for="inputExperience" class="col-sm-2 col-form-label"><%if current_user.customers.last.customer_logo.attached?%>Change Company Logo<%else%>Company Logo<%end%></label>
+      <div class="form-group col-sm-10">
+        <%= f.file_field :customer_logo, accept:'image/*' %>
+      </div>
+    </div>
+
+    <div class="row">
       <div class="offset-sm-2 col-sm-10">
-      	<%= f.submit 'Proceed to Dashboard', class: 'btn btn-primary' %>
+      	<%= f.submit 'Update', class: 'btn btn-primary' %>
       </div>
     </div>
   <%end%>
@@ -40,40 +58,6 @@
 
 <script>
   $(function () {
-		$( "#customer_customer_name" ).autocomplete({
-		  source: function( request, response ) {
-		   	$.ajax({
-			    url: "/all_customers_details/<%=current_user.token%>",
-			    type: 'GET',
-			    dataType: "json",
-			    data: {
-			     search_term: request.term
-			    },
-			    success: function( data ) {
-			     	response(data);
-			    }
-			  });
-		  },
-		  select: function (event, ui) {
-		  	$('#customer_exist_cust_id').val(ui.item.value);
-        $('#customer_exist_name').val(ui.item.label);
-		    $('#customer_customer_name').val(ui.item.label);
-		    $('#customer_customer_phone').val(ui.item.phone);
-		    $('#customer_customer_email').val(ui.item.email);
-		    $('#customer_customer_address').val(ui.item.address);
-		    return false;
-		  },
-		  focus: function(event, ui){
-		    $('#customer_exist_cust_id').val('');
-        $('#customer_exist_name').val('');
-		    $('#customer_customer_name').val('');
-		    $('#customer_customer_phone').val('');
-		    $('#customer_customer_email').val('');
-		    $('#customer_customer_address').val('');
-		    return false;
-		   },
-		});
-
     $.validator.setDefaults({
       submitHandler: function (form) {
         form.submit()
@@ -126,15 +110,6 @@
       },
       unhighlight: function (element, errorClass, validClass) {
         $(element).removeClass('is-invalid');
-      }
-    });
-
-    $('#customer_customer_name').blur(function(){
-      if ($('#customer_exist_name').val() != $(this).val()) {
-        $('#customer_exist_cust_id').val('');
-        $('#customer_customer_phone').val('');
-        $('#customer_customer_email').val('');
-        $('#customer_customer_address').val('');
       }
     });
   });

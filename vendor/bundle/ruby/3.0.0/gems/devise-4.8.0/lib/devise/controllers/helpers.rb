@@ -213,10 +213,13 @@ module Devise
       #   end
       #
       def after_sign_in_path_for(resource_or_scope)
-        if [1,2].include?(resource_or_scope.role)
-          stored_location_for(resource_or_scope) || signed_in_root_path(resource_or_scope)
-        else
-          customer_view_path(resource_or_scope.token)
+        # stored_location_for(resource_or_scope) || signed_in_root_path(resource_or_scope)
+        if resource_or_scope.role == 1
+          admin_home_path(resource_or_scope.token)
+        elsif resource_or_scope.role == 2
+          employee_home_path(resource_or_scope.token)
+        elsif resource_or_scope.role == 3
+          customer_home_path(resource_or_scope.token)
         end
       end
 

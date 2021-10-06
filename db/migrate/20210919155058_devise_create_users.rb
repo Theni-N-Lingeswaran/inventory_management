@@ -9,6 +9,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string :alternate_contact_number, null: true, default: nil
       t.integer :role, default: 3, limit: 1
       t.boolean :active, default: true
+      t.date :expired_on, null: true
 
       ## Database authenticatable
       t.string :email,              null: false, default: ""

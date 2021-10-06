@@ -1,0 +1,61 @@
+<div class="card-body">
+	<table id="products_table" class="table table-bordered table-striped  table-hover">
+	  <thead>
+	    <tr>
+        <th>Product Name</th>
+        <th>Product Details</th>
+	      <th>Product Category</th>
+	      <th>Product Sub-Category</th>
+	      <th>Total No of Complaint</th>
+	      <th>Status / Actions</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <%@all_products.each do |all_product|%>
+	      <tr>
+          <td><%=all_product.product_name&.capitalize%></td>
+          <td><%=all_product.product_code&.capitalize%></td>
+	        <td><%=all_product.category&.category&.category_name&.capitalize%></td>
+	        <td><%=all_product.category&.category_name&.capitalize%></td>
+	        <td><%=all_product.compliants&.size%></td>
+          <td>
+            <div class="row" style="align-items: center;">
+              <div>
+                <a class="btn btn-block bg-gradient-<%=all_product.delist == 1 ? 'danger' : 'success'%> btn-xs pt-1" href="javascript:void(#)"> <%=all_product.delist == 1 ? 'De-listed' : 'Active'%> </a>
+              </div>
+              <div>
+                <a class="nav-link" href="javascript:void(#)"><i class="fas fa-trash-alt"></i></a>
+              </div>
+            </div>
+          </td>
+	      </tr>
+	    <%end%>
+	  </tbody>
+	</table>
+</div>
+
+<script>
+  $(function () {
+    $("#products_table").DataTable({
+      buttons: ["copy", "csv", "excel", "pdf", "print"],
+      responsive: true,
+      stateSave: true,
+      lengthChange: false,
+      autoWidth: false,
+      paging: true,
+      lengthChange: false,
+      searching: true,
+      ordering: true,
+      info: true,
+      scrollX: false,
+      scrollCollapse: true,
+
+      columnDefs: [
+        {targets: [0, 1, 2, 3], className: 'text-left', width: '20%'},
+        {targets: [4, 5], className: 'text-center', width: '10%'},
+     ]
+
+    }).buttons().container().appendTo('#products_table_wrapper .col-md-6:eq(0)');
+    // $('#products_table_filter').append('<label>Filter:<div id="status_filter"></div></label>');
+  });
+</script>

@@ -19,12 +19,18 @@
     <link rel="stylesheet" href="/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> -->
+    <link rel="stylesheet" href="/assets/virtual-select.min.css">
 
   </head>
-  <body class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed hold-transition">
+  <body class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed hold-transition text-sm">
     <div class="wrapper">
       <div class="preloader flex-column justify-content-center align-items-center">
-        <img class="animation__wobble" src="/assets/AdminLTELogo.png" alt="LoadingLogo" height="60" width="60">
+        <%if current_user.customers&.last&.customer_logo&.attached?%>
+          <%= image_tag url_for(current_user.customers.last.customer_logo), style: 'height:60px; width:60px;'%>
+        <%else%>
+          <img class="animation__wobble" src="/assets/logo.png" alt="LoadingLogo" height="60" width="60">
+        <%end%>
       </div>
 
       <nav class="main-header navbar navbar-expand navbar-dark">
@@ -130,22 +136,31 @@
 
       <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="/" class="brand-link">
-          <img src="/assets/AdminLTELogo.png" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-          <span class="brand-text font-weight-light">Hi, <%=current_user.contact_name&.titleize%></span>
+        <a href="<%= current_user.role == 1 ? company_profile_path(current_user.token) : user_details_path%>" class="brand-link">
+          <%if current_user.customers.last&.customer_logo&.attached?%>
+            <%= image_tag url_for(current_user.customers.last.customer_logo), class: 'brand-image img-circle elevation-3', style: 'opacity: .8'%>
+          <%else%>
+            <img src="/assets/logo.png" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+          <%end%>
+          <span class="brand-text font-weight-light"><%=current_user.customers.last&.customer_name&.titleize%></span>
         </a>
 
         <!-- Sidebar -->
         <div class="sidebar">
           <!-- Sidebar user panel (optional) -->
-          <!-- <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-              <img src="/assets/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+
+              <%if current_user.profile_picture.attached?%>
+                <%= image_tag url_for(current_user.profile_picture), class: 'img-circle elevation-2'%>
+              <%else%>
+                <img src="/assets/avatar5.png" class="img-circle elevation-2" alt="User Image">
+              <%end%>
             </div>
             <div class="info">
-              <a href="javascript:void(#)" class="d-block"><%=current_user.contact_name&.titleize%></a>
+              <a href="<%=user_details_path%>" class="d-block">Hi, <%=current_user.contact_name&.titleize%></a>
             </div>
-          </div> -->
+          </div>
 
           <!-- SidebarSearch Form -->
           <div class="form-inline mt-3 d-flex">
@@ -161,56 +176,39 @@
 
           <!-- Sidebar Menu -->
           <nav class="mt-2">
-            <%unless current_user.customers.size == 0%>
-              <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
-                <li class="nav-item menu-open">
-                  <a href="/" class="nav-link active">
-                    <i class="nav-icon fas fa-tachometer-alt"></i><p>Dashboard</p>
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+              <% @side_panel_links = SidePanelLink.all.select{|main| main.link_for.include?(current_user.role) && main.parent_link_id == nil}
+              @side_panel_links.each do |side_panel_main_links|
+                @side_panel_sub_links = side_panel_main_links.side_panel_sub_links.select{|sub_link| sub_link.link_for.include?(current_user.role)}
+                current_url_path = request.fullpath&.split('/')[1]
+                active_link = ''
+                if (['admin_home', 'employee_home', 'customer_home'].include?(current_url_path) && side_panel_main_links.id == 1) || side_panel_main_links.link_url.include?(request.path_parameters[:action]) == true
+                  active_link = 'active'
+                end
+                %>
+                <li class="nav-item <%if side_panel_main_links.id == 2%> menu-open <%end%>">
+                  <a href="<%=side_panel_main_links.link_url&.gsub('[token]',current_user.token)%>" class="nav-link <%=active_link%>">
+                    <i class="nav-icon <%=side_panel_main_links.link_icon%> "></i><p><%=side_panel_main_links.link_name%><%if @side_panel_sub_links.count != 0%><i class="right fas fa-angle-right"></i><%end%></p>
                   </a>
+
+                  <%if @side_panel_sub_links.count != 0%>
+                    <ul class="nav nav-treeview">
+                    <%@side_panel_sub_links.each do |side_panel_sub_links|
+                    active_link = ''
+                    if side_panel_sub_links.link_url.include?(current_url_path) == true
+                      active_link = 'active'
+                    end%>
+                      <li class="nav-item">
+                        <a style='width: 100%;' href="<%=side_panel_sub_links.link_url&.gsub('[token]',current_user.token)%>" class="nav-link <%=active_link%>">
+                          <i class="nav-icon <%=side_panel_sub_links.link_icon%>"></i><p><%=side_panel_sub_links.link_name%></p>
+                        </a>
+                      </li>
+                    <%end%>
+                    </ul>
+                  <%end%>
                 </li>
-
-
-                <li class="nav-item">
-                  <a href="/settings" class="nav-link">
-                    <i class="nav-icon fas fa-cogs"></i><p>Settings<i class="right fas fa-angle-right"></i></p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                      <a href="pages/charts/chartjs.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i><p>Manage Categories</p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="pages/charts/inline.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i><p>Manage Products</p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="pages/charts/uplot.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i><p>Manage Users</p>
-                      </a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a href="pages/charts/uplot.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i><p>Manage Complaints</p>
-                      </a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a href="pages/charts/uplot.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i><p>Manage Invoices</p>
-                      </a>
-                    </li>
-
-                  </ul>
-                </li>
-
-
-
-              </ul>
-            <%end%>
+              <%end%>
+            </ul>
           </nav>
           <!-- /.sidebar-menu -->
         </div>
@@ -221,7 +219,7 @@
           <div class="container-fluid">
             <div class="row mb-2">
               <div class="col-sm-6">
-                <h1 class="m-0"><%#=request.path_parameters[:action]&.titleize%></h1>
+                <h1 class="m-0"><%=request.path_parameters[:action]&.titleize%></h1>
               </div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -267,7 +265,7 @@
   <!-- <script src="/assets/plugins/jquery-mapael/jquery.mapael.min.js"></script> -->
   <!-- <script src="/assets/plugins/jquery-mapael/maps/usa_states.min.js"></script> -->
   <!-- <script src="/assets/plugins/chart.js/Chart.min.js"></script> -->
-  <script src="/assets/demo.js"></script>
+  <!-- <script src="/assets/demo.js"></script> -->
   <!-- <script src="/assets/pages/dashboard2.js"></script> -->
   <script src="/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
   <script src="/assets/plugins/toastr/toastr.min.js"></script>
@@ -289,6 +287,8 @@
   <script src="/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
   <script src="/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
   <script src="/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+  <script src="/assets/virtual-select.min.js"></script>
   
 
   <script>
@@ -300,7 +300,7 @@
         timer: 3000
       });
       <%if notice || alert%>
-        load_intro_message("Hi, Welcome <%=current_user.contact_name&.titleize%>")
+        load_intro_message(' <%=notice||alert%>')
       <%end%>
     });
 

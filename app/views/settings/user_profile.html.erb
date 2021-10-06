@@ -1,0 +1,101 @@
+<div class="card-body">
+  <%= form_for(current_user, url: update_user_details_path, :html => { :id => 'my_profile' }) do |f| %>
+    <div class="card-body box-profile">
+      <div class="widget-user-image text-center">
+        <%if current_user.profile_picture.attached?%>
+          <%= image_tag url_for(current_user.profile_picture), class: 'img-circle elevation-2', style: 'height:160px; width:160px;'%>
+        <%else%>
+          <img class="img-circle elevation-2" src="/assets/avatar.png" alt="User Avatar">
+        <%end%>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputName" class="col-sm-2 col-form-label">Contact Name</label>
+      <div class="form-group col-sm-10">
+        <%= f.text_field :contact_name, autofocus: true, autocomplete: 'contact_name', placeholder: 'Contact Name', :required => true, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputEmail" class="col-sm-2 col-form-label">Company Phone</label>
+      <div class="form-group col-sm-10">
+        <%= f.text_field :contact_number, autofocus: true, autocomplete: 'contact_number', placeholder: 'Contact Number', :required => true, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputName2" class="col-sm-2 col-form-label">Company Email</label>
+      <div class="form-group col-sm-10">
+      	<%= f.text_field :email, autofocus: true, autocomplete: 'email', placeholder: 'Email', :required => true, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputExperience" class="col-sm-2 col-form-label"><%if current_user.profile_picture.attached?%>Change Profile Picture<%else%>Profile Picture<%end%></label>
+      <div class="form-group col-sm-10">
+        <%= f.file_field :profile_picture, accept:'image/*' %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="offset-sm-2 col-sm-10">
+      	<%= f.submit 'Update', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  <%end%>
+</div>
+
+<script>
+  $(function () {
+    $.validator.setDefaults({
+      submitHandler: function (form) {
+        form.submit()
+      }
+    });
+    $('#my_profile').validate({
+      rules: {
+        'user[contact_name]': {
+          required: true
+        },
+        'user[contact_number]': {
+          required: true,
+          number: true,
+          minlength: 10,
+          maxlength: 15,
+        },
+        'user[email]': {
+          required: true,
+          email: true,
+        }
+      },
+      messages: {
+      	'user[contact_name]': {
+          required: "Please enter a name"
+        },
+        'user[contact_number]': {
+          required: "Please enter a number",
+          number: "Please enter a vaild contact number",
+          minlength: "Please enter at least 10 characters",
+          maxlength: "Max 15 characters allowed"
+        },
+        'user[email]': {
+          required: "Please enter a email address",
+          email: "Please enter a vaild email address"
+        }
+      },
+      errorElement: 'div',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+      }
+    });
+
+  });
+</script>

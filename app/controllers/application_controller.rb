@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
 	before_action :configure_permitted_parameters, if: :devise_controller?
 
-
 	private
 
 	def check_linked_customer
@@ -9,6 +8,16 @@ class ApplicationController < ActionController::Base
    		redirect_to company_details_path(current_user.token)
     end
 	end
+
+	def check_valid_token
+		if params[:token]
+	  	unless current_user.token == params[:token]
+	  		render file: 'public/422.html', layout: false
+	  	end
+  	else
+  		redirect_to root_path
+  	end
+  end
 	
   protected
   def configure_permitted_parameters

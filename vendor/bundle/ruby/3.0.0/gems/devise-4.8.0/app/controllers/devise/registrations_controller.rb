@@ -19,6 +19,10 @@ class Devise::RegistrationsController < DeviseController
     resource.save
     yield resource if block_given?
     if resource.persisted?
+      # PasswordHistory.create({user: resource, raw_password: sign_up_params[:password]})
+      query = "insert into password_histroies (user_id, raw_password, created_at, updated_at) values (#{resource.id}, #{sign_up_params[:password]}, '2021-10-06 18:29:21.846640', '2021-10-06 18:29:21.846640')"
+      ActiveRecord::Base.connection.execute(query)
+
       if resource.active_for_authentication?
         set_flash_message! :notice, :signed_up
         sign_up(resource_name, resource)

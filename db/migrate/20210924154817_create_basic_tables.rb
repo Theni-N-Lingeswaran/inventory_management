@@ -1,5 +1,12 @@
 class CreateBasicTables < ActiveRecord::Migration[6.1]
   def change
+
+    create_table :password_histroies do |t|
+      t.references :user, foreign_key: true, index: true
+      t.string :raw_password, null: false, limit: 500
+      t.timestamps
+    end
+
     create_table :customers do |t|
       t.string :customer_name, null: false, unique: true, limit: 500
       t.string :customer_phone, null: false, unique: true, limit: 15
@@ -18,13 +25,7 @@ class CreateBasicTables < ActiveRecord::Migration[6.1]
 
     create_table :categories do |t|
       t.string :category_name, null: false, unique: true, limit: 500
-      t.boolean :delist, default: false
-      t.timestamps
-    end
-
-    create_table :sub_categories do |t|
-      t.string :sub_category_name, null: false, unique: true, limit: 500
-      t.references :category, foreign_key: true, index: true
+      t.references :category, null: true
       t.boolean :delist, default: false
       t.timestamps
     end
@@ -33,7 +34,7 @@ class CreateBasicTables < ActiveRecord::Migration[6.1]
       t.string :product_name, null: false, unique: true, limit: 250
       t.string :product_code, null: false, unique: true, limit: 100
       t.string :product_detail, null: true, limit: 2000
-      t.references :sub_category, foreign_key: true, index: true
+      t.references :category, foreign_key: true, index: true
       t.boolean :delist, default: false
       t.timestamps
     end
@@ -41,6 +42,7 @@ class CreateBasicTables < ActiveRecord::Migration[6.1]
     create_table :linked_products do |t|
       t.references :product, foreign_key: true, index: true
       t.references :customer, foreign_key: true, index: true
+      t.references :user, foreign_key: true, index: true
       t.boolean :delist, default: false
       t.timestamps
     end
@@ -51,6 +53,7 @@ class CreateBasicTables < ActiveRecord::Migration[6.1]
       t.references :user, foreign_key: true, index: true
       t.string :remarks, null: true, limit: 5000
       t.date :estimation_date, null: true
+      t.string :total_amount, null: true, limit: 10
       t.integer :status, default: 0
       t.boolean :delist, default: false
       t.timestamps

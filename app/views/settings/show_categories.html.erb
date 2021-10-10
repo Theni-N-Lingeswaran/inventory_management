@@ -1,0 +1,101 @@
+
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card-header" style="cursor: move;">
+      <h3 class="card-title"><i class="ion ion-clipboard mr-1"></i>Main Category</h3>
+      <!-- <div class="card-tools">
+        <ul class="pagination pagination-sm">
+          <li class="page-item"><a href="#" class="page-link">«</a></li>
+          <li class="page-item"><a href="#" class="page-link">1</a></li>
+          <li class="page-item"><a href="#" class="page-link">2</a></li>
+          <li class="page-item"><a href="#" class="page-link">3</a></li>
+          <li class="page-item"><a href="#" class="page-link">»</a></li>
+        </ul>
+      </div> -->
+    </div>
+    <div class="card-body" style="max-height: 75%;overflow: auto;">
+      <ul class="todo-list ui-sortable" data-widget="todo-list">
+        <%Category.main_categories.each do |main_category|%>
+          <li>
+            <span class="handle">
+              <i class="fas fa-ellipsis-v"></i>
+              <i class="fas fa-ellipsis-v"></i>
+            </span>
+            <span class="text"><%=main_category.category_name%></span>
+            <span style="float: right;">
+              <input type="checkbox" id="main_category_<%=main_category.id%>" <%if main_category.delist == true%> checked <%end%> data-toggle="toggle" data-on="De-active" data-off="Active" data-onstyle="danger" data-offstyle="success" data-size="xs" data-width="80" data-height="20" data-category-id="<%=main_category.id%>" data-sub-category-count="<%=main_category.sub_categories&.size%>" data-products-count="0" data-delist-status="<%=main_category.delist == false ? 1 : 0%>" onchange='de_activate_category(this)'>
+            </span>
+            <div class="tools">
+              <i class="fas fa-edit" onclick="load_sub_categories(<%=main_category.id%>)"></i>
+            </div>
+          </li>
+        <%end%>
+      </ul>
+    </div>
+    <div class="card-footer clearfix">
+      <button type="button" class="btn btn-primary float-right" onclick="create_new_category(0)"><i class="fas fa-plus"></i> Add Main Category</button> 
+    </div>
+  </div>
+  <div class="col-lg-6" id="sub_categories_div">
+  </div>
+</div>
+<script>
+  function de_activate_category(obj) {
+    category_id = $(obj).data('category-id');
+    sub_category_count = $(obj).data('sub-category-count');
+    delist_status = $(obj).data('delist-status');
+    $.ajax({
+      url: "/update_category_status/<%=current_user.token%>",
+      type: 'POST',
+      async: false,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+      },
+      data: { category_id: category_id, delist_status: delist_status },
+      success: function(data) {
+        $(obj).data('delist-status', data);
+        load_sub_categories(category_id)
+      }
+    });
+  }
+
+  function de_activate_sub_category(obj) {
+    category_id = $(obj).data('category-id');
+    main_category_id = $(obj).data('main-category-id');
+    product_count = $(obj).data('product-count');
+    delist_status = $(obj).data('delist-status');
+    main_category_delist_status = $('#main_category_'+main_category_id).data('delist-status');
+
+    console.log(main_category_delist_status)
+    $.ajax({
+      url: "/update_category_status/<%=current_user.token%>",
+      type: 'POST',
+      async: false,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+      },
+      data: { category_id: category_id, delist_status: delist_status },
+      success: function(data) {
+        $(obj).data('delist-status', data);
+      }
+    });
+  }
+
+  function load_sub_categories(category_id) {
+    $.ajax({
+      url: "/get_sub_categories/<%=current_user.token%>",
+      type: 'GET',
+      dataType : 'html',
+      async: false,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+      },
+      data: { category_id: category_id },
+      success: function(data) {
+        $('#sub_categories_div').html(data);
+        $("[data-toggle='toggle']").bootstrapToggle('destroy');
+        $("[data-toggle='toggle']").bootstrapToggle();
+      }
+    });
+  }
+</script>

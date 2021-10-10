@@ -4,6 +4,7 @@ class Customer < ApplicationRecord
   has_many :users, through: :linked_customers
   has_many :linked_products
   has_many :products, through: :linked_products
+  has_many :compliants
 
   scope :active_customers, lambda {where(:delist=>false)}
   scope :de_active_customers, lambda {where(:delist=>true)}

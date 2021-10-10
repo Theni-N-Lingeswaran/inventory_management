@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= form_for(:customer, url: '/customers', :html => { :id => 'link_company' }) do |f| %>
+  <%= form_for(:customer, url: '/customers', :html => { :id => 'link_company_form' }) do |f| %>
   	<%= f.hidden_field :exist_cust_id%>
     <%= f.hidden_field :customer_name, id: 'customer_exist_name', name: 'customer_exist_name'%>
     <div class="row">
@@ -79,7 +79,7 @@
         form.submit()
       }
     });
-    $('#link_company').validate({
+    $('#link_company_form').validate({
       rules: {
         'customer[customer_name]': {
           required: true

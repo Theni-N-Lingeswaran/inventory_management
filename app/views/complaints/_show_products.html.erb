@@ -7,24 +7,28 @@
 	      <th>Product Category</th>
 	      <th>Product Sub-Category</th>
 	      <th>Total No of Complaint</th>
-	      <th>Status / Actions</th>
+	      <th>Status / Action</th>
 	    </tr>
 	  </thead>
 	  <tbody>
 	    <%@all_products.each do |all_product|%>
-	      <tr>
+	      <tr <%if all_product.category&.delist == true%>style='background-color: #cd0c1166;'<%end%> >
           <td><%=all_product.product_name&.capitalize%></td>
           <td><%=all_product.product_code&.capitalize%></td>
 	        <td><%=all_product.category&.category&.category_name&.capitalize%></td>
 	        <td><%=all_product.category&.category_name&.capitalize%></td>
 	        <td><%=all_product.compliants&.size%></td>
           <td>
-            <div class="row" style="align-items: center;">
-              <div>
-                <a class="btn btn-block bg-gradient-<%=all_product.delist == 1 ? 'danger' : 'success'%> btn-xs pt-1" href="javascript:void(#)"> <%=all_product.delist == 1 ? 'De-listed' : 'Active'%> </a>
-              </div>
-              <div>
-                <a class="nav-link" href="javascript:void(#)"><i class="fas fa-trash-alt"></i></a>
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <button class="btn btn-xs btn-<%if all_product.delist == false %>success<%else%>danger<%end%>" data-product-id="<%=all_product.id%>" data-complaint-count="<%=all_product.compliants&.size%>" data-delist-status="<%=(all_product.delist == false ? 1 : 0)%>" onclick="de_activate_product(this)">
+                  <%if all_product.delist == false %>
+                    <i class="fas fa-trash"></i>
+                  <%else%>
+                    <i class="fas fa-trash-restore"></i>
+                  <%end%>
+                </button>
+                <button id="btnClear" class="btn btn-xs btn-primary" onclick="edit_product(<%=all_product.id%>)"><i class="fas fa-edit"></i></button>
               </div>
             </div>
           </td>
@@ -49,13 +53,37 @@
       info: true,
       scrollX: false,
       scrollCollapse: true,
-
       columnDefs: [
         {targets: [0, 1, 2, 3], className: 'text-left', width: '20%'},
         {targets: [4, 5], className: 'text-center', width: '10%'},
      ]
-
     }).buttons().container().appendTo('#products_table_wrapper .col-md-6:eq(0)');
-    // $('#products_table_filter').append('<label>Filter:<div id="status_filter"></div></label>');
+
+    $('#products_table_filter').append("<a href='<%=new_product_path%>' class='btn btn-primary ml-2'><i class='fas fa-plus'></i> Add New Product</a>");
   });
+
+  function de_activate_product(obj) {
+    product_id = $(obj).data('product-id');
+    complaint_count = $(obj).data('complaint-count');
+    delist_status = $(obj).data('delist-status');
+    $.ajax({
+      url: "/update_product_status/<%=current_user.token%>",
+      type: 'POST',
+      async: false,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+      },
+      data: { product_id: product_id, delist_status: delist_status },
+      success: function(data) {
+        $(obj).data('delist-status', data);
+        if (data == 1) {
+          $(obj).removeClass('btn-danger').addClass('btn-success');
+          $(obj).html('<i class="fas fa-trash"></i>')
+        } else {
+          $(obj).removeClass('btn-success').addClass('btn-danger');
+          $(obj).html('<i class="fas fa-trash-restore"></i>')
+        }
+      }
+    });
+  }
 </script>

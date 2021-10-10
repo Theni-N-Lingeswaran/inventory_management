@@ -29,7 +29,7 @@ LinkedProduct.destroy_all
 LinkedProduct.create!([{product_id: 1, customer_id: 2, user_id: 3}, {product_id: 2, customer_id: 2, user_id: 3}])
 
 Compliant.destroy_all
-Compliant.create!([{complaint_details: 'Printer not working', product_id: 1, user_id: 2, remarks: 'Dead Condition', estimation_date: '2021-12-24', total_amount: '2553', status: 1}, {complaint_details: 'Display not working', product_id: 2, user_id: 2, remarks: 'Display problem', estimation_date: '2021-12-24', total_amount: '5000', status: 2}])
+Compliant.create!([{complaint_details: 'Printer not working', customer_id: 1, product_id: 1, user_id: 2, remarks: 'Dead Condition', estimation_date: '2021-12-24', total_amount: '2553', status: 1}, {complaint_details: 'Display not working', , customer_id: 1,product_id: 2, user_id: 2, remarks: 'Display problem', estimation_date: '2021-12-24', total_amount: '5000', status: 2}])
 
 Invoice.destroy_all
 Invoice.create!([{compliant_id: 1, user_id: 2, total_amount: '2553', part_amount: '553'}, {compliant_id: 1, user_id: 2, total_amount: '2553', part_amount: '500'}, {compliant_id: 1, user_id: 2, total_amount: '5000', part_amount: '553'}, {compliant_id: 2, user_id: 2, total_amount: '5000', part_amount: '2500'}, {compliant_id: 2, user_id: 2, total_amount: '5000', part_amount: '1500'}, {compliant_id: 2, user_id: 2, total_amount: '5000', part_amount: '1000'}])

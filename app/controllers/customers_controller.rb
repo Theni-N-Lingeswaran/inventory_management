@@ -25,7 +25,6 @@ class CustomersController < ApplicationController
 
     if @create_or_update
       LinkedCustomer.find_or_create_by(customer: @customer, user: current_user, delist: false)
-
       if params[:customer][:update_data] != nil && params[:customer][:update_data] != ''
         flash[:notice] = 'Company Details Updated Successfully..!'
         redirect_to company_profile_path(current_user.token)

@@ -9,5 +9,6 @@ class SecondSetTables < ActiveRecord::Migration[6.1]
       t.boolean :delist, default: 0
       t.timestamps
     end
+    add_reference :compliants, :customer, foreign_key: true, index: true, after: :complaint_details
   end
 end

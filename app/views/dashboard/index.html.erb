@@ -46,13 +46,13 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
           <div class="inner">
-            <h3><%= Customer.all.count%></h3>
+            <h3><%= current_user.customers.where.not(id: current_user.current_company_id).count%></h3>
             <p>Total Customers</p>
           </div>
           <div class="icon">
             <i class="fas fa-users"></i>
           </div>
-          <a href="#" class="small-box-footer">
+          <a href='<%=manage_customers_path(current_user.token)%>' class="small-box-footer">
             More info <i class="fas fa-arrow-circle-right"></i>
           </a>
         </div>
@@ -61,13 +61,13 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-success">
           <div class="inner">
-            <h3><%= Compliant.count%><sup style="font-size: 20px"></sup></h3>
+            <h3><%= current_user.role == 1 ? current_user.customer.compliants.count : current_user.customer.where(user_id: current_user.id).compliants.count %><sup style="font-size: 20px"></sup></h3>
             <p>All Complaints</p>
           </div>
           <div class="icon">
             <i class="far fa-copy"></i>
           </div>
-          <a href="#" class="small-box-footer">
+          <a href="<%=manage_complaints_path(current_user.token)%>" class="small-box-footer">
             More info <i class="fas fa-arrow-circle-right"></i>
           </a>
         </div>
@@ -76,13 +76,13 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-danger">
           <div class="inner">
-            <h3><%= Compliant.where.not(status: 3).count%></h3>
+            <h3><%= current_user.role == 1 ? current_user.customer.compliants.where.not(status: 3).count : current_user.customer.where(user_id: current_user.id).compliants.where.not(status: 3).count %></h3>
             <p>Open Complaints</p>
           </div>
           <div class="icon">
             <i class="fas fa-exclamation-triangle"></i>
           </div>
-          <a href="#" class="small-box-footer">
+          <a href="<%=manage_complaints_path(current_user.token)%>" class="small-box-footer">
             More info <i class="fas fa-arrow-circle-right"></i>
           </a>
         </div>
@@ -91,13 +91,13 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-warning">
           <div class="inner">
-            <h3><%= Compliant.where(status: 2).count%></h3>
+            <h3><%= current_user.role == 1 ? current_user.customer.compliants.where(status: 2).count : current_user.customer.where(user_id: current_user.id).compliants.where(status: 2).count %></h3>
             <p>Resolved Complaints</p>
           </div>
           <div class="icon">
             <i class="fas fa-laptop-medical"></i>
           </div>
-          <a href="#" class="small-box-footer">
+          <a href="<%=manage_complaints_path(current_user.token)%>" class="small-box-footer">
             More info <i class="fas fa-arrow-circle-right"></i>
           </a>
         </div>
@@ -122,7 +122,7 @@
 
     <div class="row">
       <div class="col-md-12">
-        <div class="card collapsed-card">
+        <div class="card"> <!-- <div class="card collapsed-card"> -->
           <div class="card-header card-custom-style" data-card-widget="collapse">
             <h5 class="card-title">Products Report</h5>
             <div class="card-tools">

@@ -1,6 +1,7 @@
 <div class="card-body">
   <%= form_for(:customer, url: '/customers', :html => { :id => 'link_company_form' }) do |f| %>
   	<%= f.hidden_field :exist_cust_id%>
+    <%= f.hidden_field :company_id, value: current_user.current_company_id%>
     <%= f.hidden_field :customer_name, id: 'customer_exist_name', name: 'customer_exist_name'%>
     <div class="row">
       <label for="inputName" class="col-sm-2 col-form-label">Company Name</label>

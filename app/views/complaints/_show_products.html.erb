@@ -44,7 +44,6 @@
       buttons: ["copy", "csv", "excel", "pdf", "print"],
       responsive: true,
       stateSave: true,
-      lengthChange: false,
       autoWidth: false,
       paging: true,
       lengthChange: false,
@@ -62,18 +61,22 @@
     $('#products_table_filter').append("<a href='<%=new_product_path%>' class='btn btn-primary ml-2'><i class='fas fa-plus'></i> Add New Product</a>");
   });
 
+  function edit_product(product_id) {
+    loadModal('product_modal', '50%', '', 'Edit Product', '/edit_product/<%=current_user.token%>/'+product_id, 'GET', 'submit()');
+  }
+
   function de_activate_product(obj) {
     product_id = $(obj).data('product-id');
     complaint_count = $(obj).data('complaint-count');
     delist_status = $(obj).data('delist-status');
     $.ajax({
-      url: "/update_product_status/<%=current_user.token%>",
+      url: "/update_product/<%=current_user.token%>/"+product_id,
       type: 'POST',
       async: false,
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
       },
-      data: { product_id: product_id, delist_status: delist_status },
+      data: { req_from: 'grid', product: {delist: delist_status} },
       success: function(data) {
         $(obj).data('delist-status', data);
         if (data == 1) {

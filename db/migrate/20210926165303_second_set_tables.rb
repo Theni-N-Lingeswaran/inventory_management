@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SecondSetTables < ActiveRecord::Migration[6.1]
   def change
     create_table :side_panel_links do |t|

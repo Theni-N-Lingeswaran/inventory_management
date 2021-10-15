@@ -1,0 +1,152 @@
+<div class="card-body">
+  <%= form_for(:customer, url: update_customer_path, method: 'POST', :html => { :id => 'edit_customer_form' }) do |f| %>
+
+    <%= f.hidden_field :create_data, value: 'create' %>
+    <%= f.hidden_field :company_id, value: current_user.current_company_id %>
+
+    <div class="row">
+      <label for="inputName" class="col-sm-4 col-form-label">Customer Name</label>
+      <div class="form-group col-sm-8">
+        <%= f.text_field :customer_name, autofocus: true, autocomplete: 'customer_name', placeholder: 'Customer Name', :required => true, class: 'form-control', value: @customer_details.customer_name %>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputEmail" class="col-sm-4 col-form-label">Customer Phone</label>
+      <div class="form-group col-sm-8">
+        <%= f.text_field :customer_phone, autofocus: true, autocomplete: 'customer_phone', placeholder: 'Customer Phone', :required => true, class: 'form-control', value: @customer_details.customer_phone %>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputName2" class="col-sm-4 col-form-label">Customer Email</label>
+      <div class="form-group col-sm-8">
+      	<%= f.text_field :customer_email, autofocus: true, autocomplete: 'customer_email', placeholder: 'Customer Email', :required => true, class: 'form-control', value: @customer_details.customer_email %>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputExperience" class="col-sm-4 col-form-label">Customer Address</label>
+      <div class="form-group col-sm-8">
+        <%= f.text_area :customer_address, autofocus: true, autocomplete: 'customer_address', placeholder: 'Customer Address', :rows => 3, :required => true, class: 'form-control', value: @customer_details.customer_address %>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputExperience" class="col-sm-4 col-form-label">Customer Status</label>
+      <div class="form-group col-sm-8">
+        <div id="customer_status_div" name='customer[delist]'></div>
+      </div>
+    </div>
+
+    <hr>
+    <div class="row float-right">
+      <div class="col-12">
+        <%= f.submit 'Update Customer', class: 'btn btn-success ml-2 mr-2' %>
+        <%= f.submit 'Close', type: 'button', class: 'btn btn-primary modal-close' %>
+      </div>
+    </div>
+  <%end%>
+</div>
+
+<script>
+  $(function () {
+    $.validator.setDefaults({
+      submitHandler: function (form) {
+        form.submit()
+      }
+    });
+
+    $('#edit_customer_form').validate({
+      ignore: [],
+      rules: {
+        'customer[customer_name]': {
+          required: true
+        },
+        'customer[customer_phone]': {
+          required: true,
+          number: true,
+          minlength: 10,
+          maxlength: 15,
+        },
+        'customer[customer_email]': {
+          required: true,
+          email: true,
+        },
+        'customer[customer_address]': {
+          required: true
+        },
+        'customer[delist]': {
+          required: true
+        }
+      },
+      messages: {
+      	'customer[customer_name]': {
+          required: "Please enter a customer name"
+        },
+        'customer[customer_phone]': {
+          required: "Please enter a customer number",
+          number: "Please enter a vaild contact number",
+          minlength: "Please enter at least 10 characters",
+          maxlength: "Max 15 characters allowed"
+        },
+        'customer[customer_email]': {
+          required: "Please enter a email address",
+          email: "Please enter a vaild email address"
+        },
+        'customer[customer_address]': {
+          required: "Please provide a customer address"
+        },
+        'customer[delist]': {
+          required: "Select a customer status"
+        }
+      },
+      errorElement: 'div',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        if($(element).hasClass('vscomp-hidden-input') == true) {
+          $(element).parent().addClass('is-invalid');
+        } else {
+          $(element).addClass('is-invalid');
+        }
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        if($(element).hasClass('vscomp-hidden-input') == true) {
+          $(element).parent().removeClass('is-invalid');
+        } else {
+          $(element).removeClass('is-invalid');
+        }
+      }
+    });
+
+    VirtualSelect.init({
+      ele: '#customer_status_div',
+      hideClearButton: false,
+      multiple: false,
+      search: true,
+      placeholder: 'Status',
+      options: [{label: 'Active', value: 0 }, {label: 'De-active', value: 1 }],
+      noOptionsText: 'No results found',
+      // dropboxWidth: 'auto',
+      zIndex: 10,
+      markSearchResults: false,
+      showSelectedOptionsFirst: false,
+      hasOptionDescription: true,
+      // onServerSearch: onSampleSelectServerSearch,
+      showValueAsTags: false,
+      keepAlwaysOpen: false,
+      allowNewOption: false,
+      maxValues: false,
+      disabledOptions: [],
+      selectedValue: [<%=@customer_details&.delist == true ? 1 : 0%>],
+      itemHeight: '10px',
+      optionHeight: '40px',
+      noOptionsText: 'No results found',
+      optionSelectedText: 'option selected',
+      searchPlaceholderText: 'search',
+    });
+  });
+</script>

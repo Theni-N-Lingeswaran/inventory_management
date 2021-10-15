@@ -1,6 +1,7 @@
 <div class="card-body">
-  <%= form_for(current_user.customers.last, url: '/customers', method: 'POST', :html => { :id => 'link_company' }) do |f| %>
-    <%= f.hidden_field :exist_cust_id, value: current_user.customers.last&.id %>
+  <%= form_for(current_user.customer, url: '/customers', method: 'POST', :html => { :id => 'link_company' }) do |f| %>
+    <%= f.hidden_field :exist_cust_id, value: current_user.current_company_id %>
+    <%= f.hidden_field :company_id, value: current_user.current_company_id%>
     <%= f.hidden_field :id, name: 'customer[update_data]'%>
 
     <div class="card-body box-profile">

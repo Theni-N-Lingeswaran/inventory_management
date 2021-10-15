@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 class CreateBasicTables < ActiveRecord::Migration[6.1]
   def change
-
     create_table :password_histroies do |t|
       t.references :user, foreign_key: true, index: true
       t.string :raw_password, null: false, limit: 500
@@ -67,6 +68,5 @@ class CreateBasicTables < ActiveRecord::Migration[6.1]
       t.boolean :delist, default: false
       t.timestamps
     end
-
   end
 end

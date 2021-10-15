@@ -214,7 +214,7 @@
           type: 'GET',
           dataType: "json",
           data: {
-           main_category_id: $(this).val()
+            category_id: $(this).val()
           },
           success: function(data) {
             document.querySelector('#sub_category_div').setOptions(data);

@@ -1,0 +1,96 @@
+<div class="card-body">
+	<table id="customers_table" class="table table-bordered table-striped  table-hover">
+	  <thead>
+	    <tr>
+        <th>Customer Name</th>
+        <th>Customer Phone</th>
+	      <th>Customer Email</th>
+	      <th>Customer Address</th>
+	      <th>Total No of Complaints</th>
+	      <th>Status / Action</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	<%if !@all_customers.size.zero?%>
+		    <%@all_customers.each do |all_customer|%>
+		      <tr id='tr_<%=all_customer.id%>' <%if all_customer.delist == true%>style='background-color: #cd0c1166;'<%end%>>
+	          <td><%=all_customer.customer_name&.capitalize%></td>
+	          <td><%=all_customer.customer_phone%></td>
+		        <td><%=all_customer.customer_email%></td>
+		        <td><%=all_customer.customer_address&.capitalize%></td>
+		        <td><%=all_customer.compliants&.count%></td>
+	          <td>
+	            <div class="row">
+	              <div class="col-sm-12 text-center">
+	                <button class="btn btn-xs btn-<%if all_customer.delist == false %>success<%else%>danger<%end%>" data-customer-id="<%=all_customer.id%>" data-complaint-count="<%=all_customer.compliants&.size%>" data-delist-status="<%=(all_customer.delist == false ? 1 : 0)%>" onclick="de_activate_customer(this)">
+	                  <%if all_customer.delist == false %>
+	                    <i class="fas fa-trash"></i>
+	                  <%else%>
+	                    <i class="fas fa-trash-restore"></i>
+	                  <%end%>
+	                </button>
+	                <button class="btn btn-xs btn-primary" onclick="edit_customer(<%=all_customer.id%>)"><i class="fas fa-edit"></i></button>
+	              </div>
+	            </div>
+	          </td>
+		      </tr>
+		    <%end%>
+		   <%end%>
+	  </tbody>
+	</table>
+</div>
+
+<script>
+  $(function () {
+    $("#customers_table").DataTable({
+      buttons: ["copy", "csv", "excel", "pdf", "print"],
+      responsive: true,
+      stateSave: true,
+      autoWidth: false,
+      paging: true,
+      lengthChange: false,
+      searching: true,
+      ordering: true,
+      info: true,
+      scrollX: false,
+      scrollCollapse: true,
+      columnDefs: [
+        {targets: [0, 1, 2, 3], className: 'text-left', width: '20%'},
+        {targets: [4], className: 'text-center', width: '10%'},
+     ]
+    }).buttons().container().appendTo('#customers_table_wrapper .col-md-6:eq(0)');
+
+    $('#customers_table_filter').append("<a href='<%=add_customer_path%>' class='btn btn-primary ml-2'><i class='fas fa-plus'></i> Add New Customer</a>");
+  });
+
+  function edit_customer(customer_id) {
+    loadModal('customer_modal', '50%', '', 'Edit Customer', '/edit_customer/<%=current_user.token%>/'+customer_id, 'GET', 'submit()');
+  }
+
+  function de_activate_customer(obj) {
+    customer_id = $(obj).data('customer-id');
+    complaint_count = $(obj).data('complaint-count');
+    delist_status = $(obj).data('delist-status');
+    $.ajax({
+      url: "/update_customer/<%=current_user.token%>/"+customer_id,
+      type: 'POST',
+      async: false,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+      },
+      data: { req_from: 'grid', customer: {delist: delist_status} },
+      success: function(data) {
+        $(obj).data('delist-status', data);
+        if (data == 1) {
+          $(obj).removeClass('btn-danger').addClass('btn-success');
+          $(obj).html('<i class="fas fa-trash"></i>');
+          $('#tr_'+customer_id).css('background-color', '');
+        } else {
+          $(obj).removeClass('btn-success').addClass('btn-danger');
+          $(obj).html('<i class="fas fa-trash-restore"></i>');
+          $('#tr_'+customer_id).css('background-color', 'RGB(235,157,159)');
+        }
+      }
+    });
+  }
+</script>

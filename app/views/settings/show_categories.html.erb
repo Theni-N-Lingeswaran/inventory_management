@@ -1,4 +1,3 @@
-
 <div class="row">
   <div class="col-lg-6">
     <div class="card-header" style="cursor: move;">
@@ -26,7 +25,8 @@
               <input type="checkbox" id="main_category_<%=main_category.id%>" <%if main_category.delist == true%> checked <%end%> data-toggle="toggle" data-on="De-active" data-off="Active" data-onstyle="danger" data-offstyle="success" data-size="xs" data-width="80" data-height="20" data-category-id="<%=main_category.id%>" data-sub-category-count="<%=main_category.sub_categories&.size%>" data-products-count="0" data-delist-status="<%=main_category.delist == false ? 1 : 0%>" onchange='de_activate_category(this)'>
             </span>
             <div class="tools">
-              <i class="fas fa-edit" onclick="load_sub_categories(<%=main_category.id%>)"></i>
+              <i class="fas fa-edit" onclick="edit_category(<%=main_category.id%>)"></i>
+              <i class="fas fa-search" onclick="load_sub_categories(<%=main_category.id%>)"></i>
             </div>
           </li>
         <%end%>
@@ -37,21 +37,62 @@
     </div>
   </div>
   <div class="col-lg-6" id="sub_categories_div">
+    <div class="card-header" style="cursor: move;">
+      <h3 class="card-title"><i class="ion ion-clipboard mr-1"></i>Sub Category</h3>
+    </div>
+    <div class="card-body" style="max-height: 75%;overflow: auto;">
+      <ul class="todo-list ui-sortable" data-widget="todo-list">
+        <%if !@sub_categories.nil?%>
+          <%@sub_categories.each do |sub_category|%>
+            <li>
+              <span class="handle">
+                <i class="fas fa-ellipsis-v"></i>
+                <i class="fas fa-ellipsis-v"></i>
+              </span>
+              <span class="text"><%=sub_category.category_name%></span>
+              <span style="float: right;">
+                <input type="checkbox" <%if sub_category.delist == true%> checked <%end%> data-toggle="toggle" data-on="De-active" data-off="Active" data-onstyle="danger" data-offstyle="success" data-size="xs" data-width="80" data-height="20" data-main-category-id="<%=sub_category.category.id%>" data-category-id="<%=sub_category.id%>" data-sub-category-count="0" data-products-count="<%=sub_category.products&.size%>" data-delist-status="<%=sub_category.delist == false ? 1 : 0%>" onchange='de_activate_sub_category(this)'>
+              </span>
+              <div class="tools">
+                <i class="fas fa-edit" onclick="edit_category(<%=sub_category.id%>)"></i>
+              </div>
+            </li>
+          <%end%>
+        <%end%>
+      </ul>
+    </div>
+    <%if @main_category_id != nil%>
+      <div class="card-footer clearfix">
+        <button type="button" class="btn btn-primary float-right" onclick="create_new_category(<%=@main_category_id%>)"><i class="fas fa-plus"></i> Add Sub Category</button>
+      </div>
+    <%end%>
   </div>
 </div>
 <script>
+  function create_new_category(category_id) {
+    if (category_id == 0) {
+      loadModal('add_category_modal', '40%', '', 'Add Main Category', '/add_new_category/<%=current_user.token%>?category_id=0', 'GET', 'submit()');
+    } else {
+      loadModal('add_category_modal', '40%', '', 'Add Sub Category', '/add_new_category/<%=current_user.token%>?category_id='+category_id, 'GET', 'submit()');
+    }
+  }
+
+  function edit_category(category_id) {
+    loadModal('edit_category_modal', '40%', '', 'Edit Category', '/edit_category/<%=current_user.token%>/'+category_id, 'GET', 'submit()');
+  }
+
   function de_activate_category(obj) {
     category_id = $(obj).data('category-id');
     sub_category_count = $(obj).data('sub-category-count');
     delist_status = $(obj).data('delist-status');
     $.ajax({
-      url: "/update_category_status/<%=current_user.token%>",
+      url: "/update_category/<%=current_user.token%>/"+category_id,
       type: 'POST',
       async: false,
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
       },
-      data: { category_id: category_id, delist_status: delist_status },
+      data: { req_from: 'grid', category: {delist: delist_status} },
       success: function(data) {
         $(obj).data('delist-status', data);
         load_sub_categories(category_id)
@@ -68,13 +109,13 @@
 
     console.log(main_category_delist_status)
     $.ajax({
-      url: "/update_category_status/<%=current_user.token%>",
+      url: "/update_category/<%=current_user.token%>/"+category_id,
       type: 'POST',
       async: false,
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
       },
-      data: { category_id: category_id, delist_status: delist_status },
+      data: { req_from: 'grid', category: {delist: delist_status} },
       success: function(data) {
         $(obj).data('delist-status', data);
       }

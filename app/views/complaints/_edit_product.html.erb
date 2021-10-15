@@ -1,0 +1,271 @@
+<div class="card-body">
+  <%= form_for(:product, url: update_product_path, method: 'POST', :html => { :id => 'create_product_form' }) do |f| %>
+    <div class="row">
+      <label for="inputName2" class="col-sm-2 col-form-label">Customer(s)</label>
+      <div class="form-group col-sm-10">
+        <div id='customer_div' name='linked_customer_ids'></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputName2" class="col-sm-2 col-form-label">Main Category</label>
+      <div class="form-group col-sm-10">
+        <div id='main_category_div' name='main_category'></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputName2" class="col-sm-2 col-form-label">Sub Category</label>
+      <div class="form-group col-sm-10">
+        <div id='sub_category_div' name='product[category_id]'></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputName2" class="col-sm-2 col-form-label">Product Status</label>
+      <div class="form-group col-sm-10">
+        <div id='product_delist_div' name='product[delist]'></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputName" class="col-sm-2 col-form-label">Product Name</label>
+      <div class="form-group col-sm-10">
+        <%= f.text_field :product_name, autofocus: true, autocomplete: 'product_name', placeholder: 'Product Name', :required => true, class: 'form-control', value: @edit_product.product_name %>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputEmail" class="col-sm-2 col-form-label">Product Code</label>
+      <div class="form-group col-sm-10">
+        <%= f.text_field :product_code, autofocus: true, autocomplete: 'product_code', placeholder: 'Product Code', :required => true, class: 'form-control', value: @edit_product.product_code %>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="inputExperience" class="col-sm-2 col-form-label">Product Details</label>
+      <div class="form-group col-sm-10">
+      	<%= f.text_area :product_detail, autofocus: true, autocomplete: 'product_detail', placeholder: 'Product Details', :rows => 2, :required => true, class: 'form-control', value: @edit_product.product_detail %>
+      </div>
+    </div>
+
+    <hr>
+    <div class="row float-right">
+      <div class="col-12">
+        <%= f.submit 'Update Product', class: 'btn btn-success ml-2 mr-2' %>
+        <%= f.submit 'Close', type: 'button', class: 'btn btn-primary modal-close' %>
+      </div>
+    </div>
+  <%end%>
+</div>
+
+<script>
+  $(function () {
+    $.validator.setDefaults({
+      submitHandler: function (form) {
+        form.submit()
+      }
+    });
+
+    $('#create_product_form').validate({
+      ignore: [],
+      rules: {
+        'linked_customer_ids': {
+          required: true
+        },
+        'main_category': {
+          required: true
+        },
+        'product[category_id]': {
+          required: true
+        },
+        'product[delist]': {
+          required: true
+        },
+        'product[product_name]': {
+          required: true
+        },
+        'product[product_code]': {
+          required: true
+        },
+        'product[product_detail]': {
+          required: true
+        }
+      },
+      messages: {
+      	'linked_customer_ids': {
+          required: "Please select the customers"
+        },
+        'main_category': {
+          required: "Please select a main category"
+        },
+        'product[category_id]': {
+          required: "Please select a sub-Category"
+        },
+        'product[delist]': {
+          required: "Please select a product status"
+        },
+        'product[product_name]': {
+          required: "Please provide a product name"
+        },
+        'product[product_code]': {
+          required: "Please provide a product code"
+        },
+        'product[product_detail]': {
+          required: "Please provide a product details"
+        }
+      },
+      errorElement: 'div',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        if($(element).hasClass('vscomp-hidden-input') == true) {
+          $(element).parent().addClass('is-invalid');
+        } else {
+          $(element).addClass('is-invalid');
+        }
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        if($(element).hasClass('vscomp-hidden-input') == true) {
+          $(element).parent().removeClass('is-invalid');
+        } else {
+          $(element).removeClass('is-invalid');
+        }
+      }
+    });
+
+    $.validator.addMethod("valid_amount", function(value, element) {
+      var isValidMoney = /^\d{0,9}(\.\d{0,2})?$/.test(value);
+      return this.optional(element) || isValidMoney;
+    });
+
+    VirtualSelect.init({
+      ele: '#customer_div',
+      hideClearButton: false,
+      multiple: true,
+      search: true,
+      placeholder: 'Customer Name',
+      options: <%= raw @all_customers_array.to_json%>,
+      noOptionsText: 'No results found',
+      // dropboxWidth: 'auto',
+      zIndex: 10,
+      markSearchResults: false,
+      showSelectedOptionsFirst: false,
+      hasOptionDescription: true,
+      // onServerSearch: onSampleSelectServerSearch,
+      showValueAsTags: false,
+      keepAlwaysOpen: false,
+      allowNewOption: false,
+      maxValues: false,
+      disabledOptions: [<%#= @edit_product&.customers&.ids%>],
+      selectedValue: <%= @edit_product&.customers&.ids%>,
+      itemHeight: '10px',
+      optionHeight: '40px',
+      noOptionsText: 'No results found',
+      optionSelectedText: 'option selected',
+      searchPlaceholderText: 'search',
+    });
+
+    VirtualSelect.init({
+      ele: '#main_category_div',
+      hideClearButton: false,
+      multiple: false,
+      search: true,
+      placeholder: 'Main Category',
+      options: <%= raw @main_category_array.to_json%>,
+      noOptionsText: 'No results found',
+      // dropboxWidth: 'auto',
+      zIndex: 10,
+      markSearchResults: false,
+      showSelectedOptionsFirst: false,
+      hasOptionDescription: true,
+      // onServerSearch: onSampleSelectServerSearch,
+      showValueAsTags: false,
+      keepAlwaysOpen: false,
+      allowNewOption: false,
+      maxValues: false,
+      disabledOptions: [],
+      selectedValue: [<%=@edit_product&.category&.category&.id%>],
+      itemHeight: '10px',
+      optionHeight: '40px',
+      noOptionsText: 'No results found',
+      optionSelectedText: 'option selected',
+      searchPlaceholderText: 'search',
+    });
+
+    VirtualSelect.init({
+      ele: '#sub_category_div',
+      hideClearButton: false,
+      multiple: false,
+      search: true,
+      placeholder: 'Sub-Category',
+      options: [<%= raw @sub_category_array.to_json%>],
+      noOptionsText: 'No results found',
+      // dropboxWidth: 'auto',
+      zIndex: 10,
+      markSearchResults: false,
+      showSelectedOptionsFirst: false,
+      hasOptionDescription: true,
+      // onServerSearch: onSampleSelectServerSearch,
+      showValueAsTags: false,
+      keepAlwaysOpen: false,
+      allowNewOption: false,
+      maxValues: false,
+      disabledOptions: [],
+      selectedValue: [],
+      itemHeight: '10px',
+      optionHeight: '40px',
+      noOptionsText: 'No results found',
+      optionSelectedText: 'option selected',
+      searchPlaceholderText: 'search',
+    });
+
+    VirtualSelect.init({
+      ele: '#product_delist_div',
+      hideClearButton: false,
+      multiple: false,
+      search: false,
+      placeholder: 'Product Status',
+      options: [{label: 'Active', value: 0}, {label: 'De-active', value: 1}],
+      noOptionsText: 'No results found',
+      // dropboxWidth: 'auto',
+      zIndex: 10,
+      markSearchResults: false,
+      showSelectedOptionsFirst: false,
+      hasOptionDescription: true,
+      // onServerSearch: onSampleSelectServerSearch,
+      showValueAsTags: false,
+      keepAlwaysOpen: false,
+      allowNewOption: false,
+      maxValues: false,
+      disabledOptions: [],
+      selectedValue: [<%= @edit_product&.delist == true ? 1 : 0%>],
+      itemHeight: '10px',
+      optionHeight: '40px',
+      noOptionsText: 'No results found',
+      optionSelectedText: 'option selected',
+      searchPlaceholderText: 'search',
+    });
+
+    $("#main_category_div").on('change', function(){
+      if ($(this).val() != '') {
+        $.ajax({
+          url: "/get_sub_categories/<%=current_user.token%>",
+          type: 'GET',
+          dataType: "json",
+          data: {
+            category_id: $(this).val()
+          },
+          success: function(data) {
+            document.querySelector('#sub_category_div').setOptions(data);
+            document.querySelector('#sub_category_div').setValue(<%=@edit_product&.category_id%>);
+          }
+        });
+      } else {
+        document.querySelector('#sub_category_div').setOptions([]);
+      }
+    });
+  });
+</script>

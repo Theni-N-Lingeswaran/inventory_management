@@ -2,6 +2,7 @@
   <%= form_for(:complaint, url: create_complaint_path, method: 'POST', :html => { :id => 'create_complaint_form' }) do |f| %>
 
     <%= f.hidden_field :user_id, value: current_user.id%>
+    <%= f.hidden_field :company_id, value: current_user.current_company_id%>
     <div class="row">
       <label for="inputName" class="col-sm-2 col-form-label">Customer Name</label>
       <div class="form-group col-sm-10">
@@ -147,7 +148,7 @@
       ele: '#customer_name_div',
       hideClearButton: false,
       multiple: false,
-      search: false,
+      search: true,
       placeholder: 'Customer Name',
       options: <%= raw @all_customers_array.to_json%>,
       noOptionsText: 'No results found',
@@ -174,7 +175,7 @@
       ele: '#customer_product_div',
       hideClearButton: false,
       multiple: false,
-      search: false,
+      search: true,
       placeholder: 'Product Name',
       options: [],
       noOptionsText: 'No results found',
@@ -201,7 +202,7 @@
       ele: '#complaint_status_div',
       hideClearButton: false,
       multiple: false,
-      search: false,
+      search: true,
       placeholder: 'Status',
       options: [{label: 'Receiving', value: 'pending' }, {label: 'Processing', value: 'processing' }, {label: 'Resolved', value: 'resolved' }, {label: 'Delivered', value: 'delivered' }],
       noOptionsText: 'No results found',

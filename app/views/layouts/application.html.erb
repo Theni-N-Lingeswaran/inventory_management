@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <!-- <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> -->
     <link rel="stylesheet" href="/assets/virtual-select.min.css">
+    <link href="/assets/bootstrap4-toggle.css" rel="stylesheet">
 
   </head>
   <body class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed hold-transition text-sm">
@@ -284,9 +285,10 @@
   <script src="/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
   <script src="/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
   <script src="/assets/virtual-select.min.js"></script>
-  
-  <link href="/assets/bootstrap4-toggle.css" rel="stylesheet">
   <script src="/assets/bootstrap4-toggle.js"></script>
+
+  <link href="/assets/jBox.all.css" rel="stylesheet">
+  <script src="/assets/jBox.all.js"></script>
 
   <script>
     $(function() {
@@ -306,6 +308,76 @@
         icon: 'info',
         title: msg
       })
+    }
+
+
+    var offsetLevel = 0;
+
+    function loadModal(modal_id, width, height, title, ajax_url, ajax_method, submit_function) {
+      // if (offsetLevel > 5) {
+      //   offsetLevel = 0;
+      // }
+
+      $.ajax({
+        url: ajax_url,
+        method: ajax_method,
+        reload: 'strict',
+        success: function (response) {
+          
+          modal_id = new jBox('Modal', {
+            width: width,
+            maxHeight: (height != '' ? (jQuery(window).height() - 250) : '80%'),
+            addClass: 'inception-modal',
+            overlayClass: 'inception-overlay',
+            zIndex: 'auto',
+            draggable: false,
+            closeOnClick: false,
+            closeButton: 'title',
+            title: '<h5><b>'+title+'</b></h5>',
+            animation: {
+              open: 'zoomOut',
+              close: 'zoomOut'
+            },
+            // offset: {
+            //   x: offsetLevel * 15,
+            //   y: offsetLevel * 15
+            // },
+            content: response,
+            // footer: ("<button type='submit' class='btn btn-primary mr-2 ml-2' onclick=\""+submit_function+"\">Submit</button> <button type='button' class='btn btn-primary modal-close'>Close</button>"),
+            onCreated: function () {
+              // // Add tooltip
+              // this.tooltip = new jBox('Tooltip', {
+              //   theme: 'TooltipBorder',
+              //   attach: '[data-inception-tooltip]',
+              //   getContent: 'data-inception-tooltip',
+              //   zIndex: 'auto',
+              //   delayOpen: 600
+              // });
+
+              // // Add button event
+
+              this.content.find('.modal-close').on('click', function(){
+                modal_id.close();
+              });
+              // this.footer.find('.modal-close').on('click', function(){
+              //   modal_id.close();
+              // });
+            },
+            // Remove modal from DOM when it's closed
+            onCloseComplete: function () {
+              this.destroy();
+              this.tooltip && this.tooltip.destroy();
+            }
+          });
+          modal_id.open();
+
+        },
+        error: function () {
+          this.setContent('<div class="ajax-error">Oops, something went wrong</div>');
+        }
+      });
+
+      // offsetLevel++;
     }
   </script>
 </html>

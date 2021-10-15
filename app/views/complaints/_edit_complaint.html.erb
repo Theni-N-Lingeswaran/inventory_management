@@ -1,0 +1,302 @@
+
+<%= form_for(:complaint, url: update_complaint_path, method: 'POST', :html => { :id => 'update_complaint_form' }) do |f| %>
+
+  <%= f.hidden_field :user_id, value: current_user.id%>
+  <%= f.hidden_field :company_id, value: current_user.current_company_id%>
+  <div class="row">
+    <label for="inputName" class="col-sm-4 col-form-label">Customer Name</label>
+    <div class="form-group col-sm-8">
+      <div id='customer_name_div' name='complaint[customer_id]'></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <label for="inputEmail" class="col-sm-4 col-form-label">Customer Product</label>
+    <div class="form-group col-sm-8">
+      <div id='customer_product_div' name='complaint[product_id]'></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <label for="inputExperience" class="col-sm-4 col-form-label">Complaint Details</label>
+    <div class="form-group col-sm-8">
+    	<%= f.text_area :complaint_details, autofocus: true, autocomplete: 'complaint_details', placeholder: 'Complaint Details', :rows => 3, :required => true, class: 'form-control', value: @complaint_details&.complaint_details%>
+    </div>
+  </div>
+
+  <div class="row">
+    <label for="inputName2" class="col-sm-4 col-form-label">Remark</label>
+    <div class="form-group col-sm-8">
+      <%= f.text_field :remarks, autofocus: true, autocomplete: 'remark', placeholder: 'Complaint Remark', :required => true, class: 'form-control', value: @complaint_details&.remarks %>
+    </div>
+  </div>
+
+  <div class="row">
+    <label for="inputName2" class="col-sm-4 col-form-label">Estimated Delivery Date</label>
+    <div class="form-group col-sm-8">
+      <%= f.text_field :estimation_date, autofocus: true, autocomplete: 'estimation_date', placeholder: 'dd-mm-yyyy', class: 'form-control', readonly: true, value: @complaint_details&.estimation_date %>
+    </div>
+  </div>
+
+  <div class="row">
+    <label for="inputName2" class="col-sm-4 col-form-label">Amount</label>
+    <div class="form-group col-sm-8">
+      <%= f.text_field :total_amount, autofocus: true, autocomplete: 'total_amount', placeholder: 'Amount', :required => true, class: 'form-control', value: @complaint_details&.total_amount %>
+    </div>
+  </div>
+
+  <div class="row">
+    <label for="inputName2" class="col-sm-4 col-form-label">Complaint Status</label>
+    <div class="form-group col-sm-8">
+      <div id='complaint_status_div' name='complaint[status]'></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <label for="inputName2" class="col-sm-4 col-form-label">Active Status</label>
+    <div class="form-group col-sm-8">
+      <div id='complaint_active_status_div' name='complaint[delist]'></div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="row float-right">
+    <div class="col-12">
+      <%= f.submit 'Update Complaint', class: 'btn btn-success ml-2 mr-2' %>
+      <%= f.submit 'Close', type: 'button', class: 'btn btn-primary modal-close' %>
+    </div>
+  </div>
+<%end%>
+
+
+<script>
+  $(function () {
+    $.validator.setDefaults({
+      submitHandler: function (form) {
+        form.submit()
+      }
+    });
+
+    $('#update_complaint_form').validate({
+      ignore: [],
+      rules: {
+        'complaint[customer_id]': {
+          required: true
+        },
+        'complaint[product_id]': {
+          required: true
+        },
+        'complaint[complaint_details]': {
+          required: true
+        },
+        'complaint[remarks]': {
+          required: true
+        },
+        'complaint[estimation_date]': {
+          required: true
+        },
+        'complaint[total_amount]': {
+          required: true,
+          valid_amount: true
+        },
+        'complaint[status]': {
+          required: true
+        },
+        'complaint[delist]': {
+          required: true
+        }
+      },
+      messages: {
+      	'complaint[customer_id]': {
+          required: "Please select a Customer"
+        },
+        'complaint[product_id]': {
+          required: "Please select a Product"
+        },
+        'complaint[complaint_details]': {
+          required: "Please enter a complaint details"
+        },
+        'complaint[remarks]': {
+          required: "Please provide a complaint remark"
+        },
+        'complaint[estimation_date]': {
+          required: "Please provide a estimation delivery date"
+        },
+        'complaint[total_amount]': {
+          required: "Please provide a total amount",
+          valid_amount: "Please provide a valid amount"
+        },
+        'complaint[status]': {
+          required: "Please provide a complaint status"
+        },
+        'complaint[delist]': {
+          required: "Please provide a complaint active status"
+        }
+      },
+      errorElement: 'div',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        if($(element).hasClass('vscomp-hidden-input') == true) {
+          $(element).parent().addClass('is-invalid');
+        } else {
+          $(element).addClass('is-invalid');
+        }
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        if($(element).hasClass('vscomp-hidden-input') == true) {
+          $(element).parent().removeClass('is-invalid');
+        } else {
+          $(element).removeClass('is-invalid');
+        }
+      }
+    });
+
+    $.validator.addMethod("valid_amount", function(value, element) {
+      var isValidMoney = /^\d{0,9}(\.\d{0,2})?$/.test(value);
+      return this.optional(element) || isValidMoney;
+    });
+
+    VirtualSelect.init({
+      ele: '#customer_name_div',
+      hideClearButton: false,
+      multiple: false,
+      search: true,
+      placeholder: 'Customer Name',
+      options: <%= raw @all_customers_array.to_json%>,
+      noOptionsText: 'No results found',
+      // dropboxWidth: 'auto',
+      zIndex: 10,
+      markSearchResults: false,
+      showSelectedOptionsFirst: false,
+      hasOptionDescription: true,
+      // onServerSearch: onSampleSelectServerSearch,
+      showValueAsTags: false,
+      keepAlwaysOpen: false,
+      allowNewOption: false,
+      maxValues: false,
+      disabledOptions: [],
+      selectedValue: [<%=@complaint_details&.customer&.id%>],
+      itemHeight: '10px',
+      optionHeight: '40px',
+      noOptionsText: 'No results found',
+      optionSelectedText: 'option selected',
+      searchPlaceholderText: 'search',
+    });
+
+    VirtualSelect.init({
+      ele: '#customer_product_div',
+      hideClearButton: false,
+      multiple: false,
+      search: true,
+      placeholder: 'Product Name',
+      options: [],
+      noOptionsText: 'No results found',
+      // dropboxWidth: 'auto',
+      zIndex: 10,
+      markSearchResults: false,
+      showSelectedOptionsFirst: false,
+      hasOptionDescription: true,
+      // onServerSearch: onSampleSelectServerSearch,
+      showValueAsTags: false,
+      keepAlwaysOpen: false,
+      allowNewOption: false,
+      maxValues: false,
+      disabledOptions: [],
+      selectedValue: [],
+      itemHeight: '10px',
+      optionHeight: '40px',
+      noOptionsText: 'No results found',
+      optionSelectedText: 'option selected',
+      searchPlaceholderText: 'search',
+    });
+
+    VirtualSelect.init({
+      ele: '#complaint_status_div',
+      hideClearButton: false,
+      multiple: false,
+      search: true,
+      placeholder: 'Status',
+      options: [{label: 'Receiving', value: 'pending' }, {label: 'Processing', value: 'processing' }, {label: 'Resolved', value: 'resolved' }, {label: 'Delivered', value: 'delivered' }],
+      noOptionsText: 'No results found',
+      // dropboxWidth: 'auto',
+      zIndex: 10,
+      markSearchResults: false,
+      showSelectedOptionsFirst: false,
+      hasOptionDescription: true,
+      // onServerSearch: onSampleSelectServerSearch,
+      showValueAsTags: false,
+      keepAlwaysOpen: false,
+      allowNewOption: false,
+      maxValues: false,
+      disabledOptions: [],
+      selectedValue: ['<%=@complaint_details&.status%>'],
+      itemHeight: '10px',
+      optionHeight: '40px',
+      noOptionsText: 'No results found',
+      optionSelectedText: 'option selected',
+      searchPlaceholderText: 'search',
+    });
+
+    VirtualSelect.init({
+      ele: '#complaint_active_status_div',
+      hideClearButton: false,
+      multiple: false,
+      search: true,
+      placeholder: 'Status',
+      options: [{label: 'Active', value: 0 }, {label: 'De-active', value: 1 }],
+      noOptionsText: 'No results found',
+      // dropboxWidth: 'auto',
+      zIndex: 10,
+      markSearchResults: false,
+      showSelectedOptionsFirst: false,
+      hasOptionDescription: true,
+      // onServerSearch: onSampleSelectServerSearch,
+      showValueAsTags: false,
+      keepAlwaysOpen: false,
+      allowNewOption: false,
+      maxValues: false,
+      disabledOptions: [],
+      selectedValue: [<%=@complaint_details&.delist == true ? 1 : 0%>],
+      itemHeight: '10px',
+      optionHeight: '40px',
+      noOptionsText: 'No results found',
+      optionSelectedText: 'option selected',
+      searchPlaceholderText: 'search',
+    });
+
+    $("#customer_name_div").on('change', function(){
+      if ($(this).val() != '') {
+        $.ajax({
+          url: "/get_customers_products/<%=current_user.token%>",
+          type: 'GET',
+          dataType: "json",
+          data: {
+           customer_id: $(this).val()
+          },
+          success: function(data) {
+            document.querySelector('#customer_product_div').setOptions(data);
+            document.querySelector('#customer_product_div').setValue(<%=@complaint_details&.product&.id%>);
+          }
+        });
+      } else {
+        document.querySelector('#customer_product_div').setOptions([]);
+      }
+    });
+
+    $( "#complaint_estimation_date" ).datepicker({
+      dateFormat: 'dd-mm-yy',
+      autoSize: true,
+      changeMonth: true,
+      changeYear: true,
+      // closeText: "X",
+      // currentText: "Now",
+      // defaultDate: +7,
+      // gotoCurrent: true
+      // disabled: true,
+      // defaultDate:"24-09-2019"
+    });
+  });
+</script>

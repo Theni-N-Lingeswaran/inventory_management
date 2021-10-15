@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_26_165303) do
+ActiveRecord::Schema.define(version: 2021_10_15_041006) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -43,16 +43,20 @@ ActiveRecord::Schema.define(version: 2021_09_26_165303) do
   create_table "categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "category_name", limit: 500, null: false
     t.bigint "category_id"
+    t.bigint "company_id"
     t.boolean "delist", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["category_id"], name: "index_categories_on_category_id"
+    t.index ["company_id"], name: "index_categories_on_company_id"
   end
 
   create_table "compliants", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "complaint_details", limit: 5000, null: false
+    t.bigint "customer_id"
     t.bigint "product_id"
     t.bigint "user_id"
+    t.bigint "company_id"
     t.string "remarks", limit: 5000
     t.date "estimation_date"
     t.string "total_amount", limit: 10
@@ -60,6 +64,8 @@ ActiveRecord::Schema.define(version: 2021_09_26_165303) do
     t.boolean "delist", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_compliants_on_company_id"
+    t.index ["customer_id"], name: "index_compliants_on_customer_id"
     t.index ["product_id"], name: "index_compliants_on_product_id"
     t.index ["user_id"], name: "index_compliants_on_user_id"
   end
@@ -89,9 +95,11 @@ ActiveRecord::Schema.define(version: 2021_09_26_165303) do
   create_table "linked_customers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "customer_id"
     t.bigint "user_id"
+    t.bigint "company_id"
     t.boolean "delist", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_linked_customers_on_company_id"
     t.index ["customer_id"], name: "index_linked_customers_on_customer_id"
     t.index ["user_id"], name: "index_linked_customers_on_user_id"
   end
@@ -100,9 +108,11 @@ ActiveRecord::Schema.define(version: 2021_09_26_165303) do
     t.bigint "product_id"
     t.bigint "customer_id"
     t.bigint "user_id"
+    t.bigint "company_id"
     t.boolean "delist", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_linked_products_on_company_id"
     t.index ["customer_id"], name: "index_linked_products_on_customer_id"
     t.index ["product_id"], name: "index_linked_products_on_product_id"
     t.index ["user_id"], name: "index_linked_products_on_user_id"
@@ -144,6 +154,7 @@ ActiveRecord::Schema.define(version: 2021_09_26_165303) do
     t.string "contact_number", limit: 15, null: false
     t.string "alternate_contact_number"
     t.integer "role", limit: 1, default: 3
+    t.bigint "current_company_id"
     t.boolean "active", default: true
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -167,6 +178,7 @@ ActiveRecord::Schema.define(version: 2021_09_26_165303) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["contact_number"], name: "index_users_on_contact_number", unique: true
+    t.index ["current_company_id"], name: "index_users_on_current_company_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
@@ -174,15 +186,21 @@ ActiveRecord::Schema.define(version: 2021_09_26_165303) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "categories", "customers", column: "company_id"
+  add_foreign_key "compliants", "customers"
+  add_foreign_key "compliants", "customers", column: "company_id"
   add_foreign_key "compliants", "products"
   add_foreign_key "compliants", "users"
   add_foreign_key "invoices", "compliants"
   add_foreign_key "invoices", "users"
   add_foreign_key "linked_customers", "customers"
+  add_foreign_key "linked_customers", "customers", column: "company_id"
   add_foreign_key "linked_customers", "users"
   add_foreign_key "linked_products", "customers"
+  add_foreign_key "linked_products", "customers", column: "company_id"
   add_foreign_key "linked_products", "products"
   add_foreign_key "linked_products", "users"
   add_foreign_key "password_histroies", "users"
   add_foreign_key "products", "categories"
+  add_foreign_key "users", "customers", column: "current_company_id"
 end

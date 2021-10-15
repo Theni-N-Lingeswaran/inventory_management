@@ -23,12 +23,12 @@
           <input type="checkbox" <%if sub_category.delist == true%> checked <%end%> data-toggle="toggle" data-on="De-active" data-off="Active" data-onstyle="danger" data-offstyle="success" data-size="xs" data-width="80" data-height="20" data-main-category-id="<%=sub_category.category.id%>" data-category-id="<%=sub_category.id%>" data-sub-category-count="0" data-products-count="<%=sub_category.products&.size%>" data-delist-status="<%=sub_category.delist == false ? 1 : 0%>" onchange='de_activate_sub_category(this)'>
         </span>
         <div class="tools">
-          <!-- <i class="fas fa-edit" onclick="load_sub_categories(<%#=sub_category.id%>)"></i> -->
+          <i class="fas fa-edit" onclick="edit_category(<%=sub_category.id%>)"></i>
         </div>
       </li>
     <%end%>
   </ul>
 </div>
 <div class="card-footer clearfix">
-  <button type="button" class="btn btn-primary float-right" onclick="create_new_category(<%=params[:main_category_id]%>)"><i class="fas fa-plus"></i> Add Sub Category</button> 
+  <button type="button" class="btn btn-primary float-right" onclick="create_new_category(<%=@main_category_id%>)"><i class="fas fa-plus"></i> Add Sub Category</button> 
 </div>

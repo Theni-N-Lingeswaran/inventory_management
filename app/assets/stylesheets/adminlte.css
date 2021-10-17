@@ -35446,11 +35446,6 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 }
 
 .custom-bg-image {
-/*  background-image: url('/assets/background/bg-5.jpg');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-*/
-  /*height: 80vh;*/
   background-size: 100% 100%;
   background: url(/assets/background/bg-5.jpg) no-repeat center center fixed; 
   background-size: cover;
@@ -35459,6 +35454,12 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 .login-box,
 .register-box {
   width: 360px;
+}
+
+@media (min-width: 576px) {
+  .login-box {
+    margin-left: 750px;
+  }
 }
 
 @media (max-width: 576px) {

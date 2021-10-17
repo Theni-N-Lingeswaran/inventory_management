@@ -4,56 +4,56 @@
   <%= f.hidden_field :user_id, value: current_user.id%>
   <%= f.hidden_field :company_id, value: current_user.current_company_id%>
   <div class="row">
-    <label for="inputName" class="col-sm-4 col-form-label">Customer Name</label>
+    <label for="inputName" class="col-sm-4 col-form-label">Customer Name<span class="text-danger">*</span></label>
     <div class="form-group col-sm-8">
       <div id='customer_name_div' name='complaint[customer_id]'></div>
     </div>
   </div>
 
   <div class="row">
-    <label for="inputEmail" class="col-sm-4 col-form-label">Customer Product</label>
+    <label for="inputEmail" class="col-sm-4 col-form-label">Customer Product<span class="text-danger">*</span></label>
     <div class="form-group col-sm-8">
       <div id='customer_product_div' name='complaint[product_id]'></div>
     </div>
   </div>
 
   <div class="row">
-    <label for="inputExperience" class="col-sm-4 col-form-label">Complaint Details</label>
+    <label for="inputExperience" class="col-sm-4 col-form-label">Complaint Details<span class="text-danger">*</span></label>
     <div class="form-group col-sm-8">
     	<%= f.text_area :complaint_details, autofocus: true, autocomplete: 'complaint_details', placeholder: 'Complaint Details', :rows => 3, :required => true, class: 'form-control', value: @complaint_details&.complaint_details%>
     </div>
   </div>
 
   <div class="row">
-    <label for="inputName2" class="col-sm-4 col-form-label">Remark</label>
+    <label for="inputName2" class="col-sm-4 col-form-label">Remark<span class="text-danger">*</span></label>
     <div class="form-group col-sm-8">
       <%= f.text_field :remarks, autofocus: true, autocomplete: 'remark', placeholder: 'Complaint Remark', :required => true, class: 'form-control', value: @complaint_details&.remarks %>
     </div>
   </div>
 
   <div class="row">
-    <label for="inputName2" class="col-sm-4 col-form-label">Estimated Delivery Date</label>
+    <label for="inputName2" class="col-sm-4 col-form-label">Estimated Delivery Date<span class="text-danger">*</span></label>
     <div class="form-group col-sm-8">
       <%= f.text_field :estimation_date, autofocus: true, autocomplete: 'estimation_date', placeholder: 'dd-mm-yyyy', class: 'form-control', readonly: true, value: @complaint_details&.estimation_date %>
     </div>
   </div>
 
   <div class="row">
-    <label for="inputName2" class="col-sm-4 col-form-label">Amount</label>
+    <label for="inputName2" class="col-sm-4 col-form-label">Amount<span class="text-danger">*</span></label>
     <div class="form-group col-sm-8">
       <%= f.text_field :total_amount, autofocus: true, autocomplete: 'total_amount', placeholder: 'Amount', :required => true, class: 'form-control', value: @complaint_details&.total_amount %>
     </div>
   </div>
 
   <div class="row">
-    <label for="inputName2" class="col-sm-4 col-form-label">Complaint Status</label>
+    <label for="inputName2" class="col-sm-4 col-form-label">Complaint Status<span class="text-danger">*</span></label>
     <div class="form-group col-sm-8">
       <div id='complaint_status_div' name='complaint[status]'></div>
     </div>
   </div>
 
   <div class="row">
-    <label for="inputName2" class="col-sm-4 col-form-label">Active Status</label>
+    <label for="inputName2" class="col-sm-4 col-form-label">Active Status<span class="text-danger">*</span></label>
     <div class="form-group col-sm-8">
       <div id='complaint_active_status_div' name='complaint[delist]'></div>
     </div>

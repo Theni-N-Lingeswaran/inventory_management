@@ -55,4 +55,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'devise'
 
-gem 'rubocop', require: false
+# gem 'rubocop', require: false
+gem 'prawn'

@@ -262,6 +262,10 @@ body[class*=" jBox-blockScroll-"] {
   overflow: hidden;
 }
 
+::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);background-color: #343a3f;border-radius: 5px;}
+::-webkit-scrollbar {width: 8px;background-color: #009ddc;}
+::-webkit-scrollbar-thumb {background-color: #009ddc;border-radius: 5px;}
+
 .jBox-draggable {
   cursor: move;
 }

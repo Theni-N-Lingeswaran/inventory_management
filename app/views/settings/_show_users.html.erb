@@ -1,0 +1,98 @@
+<div class="card-body">
+	<table id="employees_table" class="table table-bordered table-striped  table-hover">
+	  <thead>
+	    <tr>
+        <th>Employee Name</th>
+        <th>Employee Phone / Alternate Phone</th>
+	      <th>Employee Email</th>
+	      <th>Employee Password</th>
+        <th>Employee Role</th>
+	      <th>Total No of Complaints</th>
+	      <th>Status / Action</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	<%if !@all_employees.size.zero?%>
+		    <%@all_employees.each do |all_employee|%>
+		      <tr id='tr_<%=all_employee.id%>' <%if all_employee.active == false%>style='background-color: #cd0c1166;'<%end%>>
+	          <td><%=all_employee.contact_name&.capitalize%></td>
+	          <td><%=all_employee.contact_number%> <br> <%=all_employee.alternate_contact_number%></td>
+		        <td><%=all_employee.email%></td>
+		        <td><b><%=all_employee.password_histroies&.last&.raw_password%></b></td>
+            <td><span class="badge badge-<%=all_employee.read_attribute_before_type_cast(:role) == 1 ? 'success' : 'primary'%>"><%=all_employee.role%></span></td>
+		        <td><%=all_employee.compliants&.count%></td>
+	          <td>
+	            <div class="row">
+	              <div class="col-sm-12 text-center">
+	                <button class="btn btn-xs btn-<%if all_employee.active == true %>success<%else%>danger<%end%>" data-employee-id="<%=all_employee.id%>" data-complaint-count="<%=all_employee.compliants&.size%>" data-active-status="<%=(all_employee.active == false ? 1 : 0)%>" onclick="de_activate_employee(this)">
+	                  <%if all_employee.active == true %>
+	                    <i class="fas fa-trash"></i>
+	                  <%else%>
+	                    <i class="fas fa-trash-restore"></i>
+	                  <%end%>
+	                </button>
+	                <button class="btn btn-xs btn-primary" onclick="edit_employee(<%=all_employee.id%>)"><i class="fas fa-edit"></i></button>
+	              </div>
+	            </div>
+	          </td>
+		      </tr>
+		    <%end%>
+		   <%end%>
+	  </tbody>
+	</table>
+</div>
+
+<script>
+  $(function () {
+    $("#employees_table").DataTable({
+      buttons: ["copy", "csv", "excel", "pdf", "print"],
+      responsive: true,
+      stateSave: true,
+      autoWidth: false,
+      paging: true,
+      lengthChange: false,
+      searching: true,
+      ordering: true,
+      info: true,
+      scrollX: false,
+      scrollCollapse: true,
+      columnDefs: [
+        {targets: [0, 1, 2, 3], className: 'text-left', width: '15%'},
+        {targets: [4, 5, 6], className: 'text-center', width: '10%'},
+     ]
+    }).buttons().container().appendTo('#employees_table_wrapper .col-md-6:eq(0)');
+
+    $('#employees_table_filter').append("<a href='<%=new_employee_path%>' class='btn btn-primary ml-2'><i class='fas fa-plus'></i> Add New Employee</a>");
+  });
+
+  function edit_employee(employee_id) {
+    loadModal('employee_modal', '50%', '', 'Edit Employee', '/edit_employee/<%=current_user.token%>/'+employee_id, 'GET', 'submit()');
+  }
+
+  function de_activate_employee(obj) {
+    employee_id = $(obj).data('employee-id');
+    complaint_count = $(obj).data('complaint-count');
+    active_status = $(obj).data('active-status');
+    $.ajax({
+      url: "/update_employee/<%=current_user.token%>/"+employee_id,
+      type: 'POST',
+      async: false,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+      },
+      data: { req_from: 'grid', user: {active: active_status} },
+      success: function(data) {
+        $(obj).data('active-status', data);
+        if (data == 0) {
+          $(obj).removeClass('btn-danger').addClass('btn-success');
+          $(obj).html('<i class="fas fa-trash"></i>');
+          $('#tr_'+employee_id).css('background-color', '');
+        } else {
+          $(obj).removeClass('btn-success').addClass('btn-danger');
+          $(obj).html('<i class="fas fa-trash-restore"></i>');
+          $('#tr_'+employee_id).css('background-color', 'RGB(235,157,159)');
+        }
+      }
+    });
+  }
+</script>

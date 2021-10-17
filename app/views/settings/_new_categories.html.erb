@@ -2,7 +2,7 @@
   <%= f.hidden_field :company_id, value: current_user.current_company_id%>
   <%if params[:category_id].to_i != 0%>
     <div class="row">
-      <label for="inputName" class="col-sm-4 col-form-label">Main Category Name</label>
+      <label for="inputName" class="col-sm-4 col-form-label">Main Category Name<span class="text-danger">*</span></label>
       <div class="form-group col-sm-8">
         <div id="category_div" name="category[category_id]"> </div>
       </div>
@@ -10,7 +10,7 @@
   <%end%>
 
   <div class="row">
-    <label for="inputName" class="col-sm-4 col-form-label"><%if params[:category_id].to_i != 0%>Sub <%else%>Main <%end%>Category Name</label>
+    <label for="inputName" class="col-sm-4 col-form-label"><%if params[:category_id].to_i != 0%>Sub <%else%>Main <%end%>Category Name<span class="text-danger">*</span></label>
     <div class="form-group col-sm-8">
       <%= f.text_field :category_name, autofocus: true, autocomplete: 'category_name', placeholder: params[:category_id].to_i != 0 ? 'Sub Category Name' : 'Main Category Name', :required => true, class: 'form-control' %>
     </div>

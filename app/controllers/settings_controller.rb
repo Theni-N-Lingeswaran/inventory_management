@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require "prawn"
 
 class SettingsController < ApplicationController
   before_action :authenticate_user!
@@ -17,12 +18,42 @@ class SettingsController < ApplicationController
 
   def company_profile; end
 
-  def link_customer
+  def link_customer; end
+
+  def show_users
+    @all_employees = current_user.customer.users.where.not(id: current_user.id)
   end
 
-  def show_users; end
+  def new_employee; end
 
-  def show_invoices; end
+  def create_employee
+    @employee_details = User.create!(employee_params)
+    if @employee_details
+      LinkedCustomer.create!(customer: current_user.customer, user: @employee_details, company_id: current_user.current_company_id)
+      PasswordHistroy.create!(raw_password: employee_params[:password], user: @employee_details)
+      flash[:notice] = 'Employee Created Successfully..!'
+    else
+      flash[:notice] = 'Problem with Employee Creation'
+    end
+    redirect_to new_employee_path
+  end
+
+  def edit_employee
+    @employee_details = User.find(params[:employee_id])
+    render partial: 'edit_employee'
+  end
+
+  def update_employee
+    @employee_details = User.find(params[:employee_id])
+    @employee_details.update(employee_params)
+
+    if params[:req_from]
+      render plain: (employee_params[:active].to_i == 1 ? 0 : 1)
+    else
+      flash[:notice] = 'Employee Updated Successfully..!'
+      redirect_to manage_users_path
+    end
+  end
 
   def new_categories
     @main_category_array = []
@@ -93,6 +124,19 @@ class SettingsController < ApplicationController
     end
   end
 
+  def show_invoices; end
+
+  def generate_invoice
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = Prawn::Document.new
+        pdf.text "sample invoice download"
+        send_data pdf.render, filename: 'invoice.pdf', type: 'application/pdf'
+      end
+    end
+  end
+
   private
 
   def user_profile_params
@@ -101,5 +145,9 @@ class SettingsController < ApplicationController
 
   def category_params
     params.require(:category).permit(:category_name, :category_id, :company_id, :delist)
+  end
+
+  def employee_params
+    params.require(:user).permit(:contact_name, :contact_number, :alternate_contact_number, :email, :password, :password_confirmation, :current_company_id, :role, :active)
   end
 end

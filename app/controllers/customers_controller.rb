@@ -25,7 +25,9 @@ class CustomersController < ApplicationController
       flash[:notice] = 'Company Details Updated Successfully..!'
       redirect_to company_profile_path(current_user.token)
     else
-      case current_user.role
+      case current_user.read_attribute_before_type_cast(:role)
+      when 0
+        redirect_to super_admin_home_path(current_user.token)
       when 1
         redirect_to admin_home_path(current_user.token)
       when 2

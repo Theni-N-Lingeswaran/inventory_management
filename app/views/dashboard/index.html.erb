@@ -61,7 +61,7 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-success">
           <div class="inner">
-            <h3><%= current_user.role == 1 ? current_user.customer.compliants.count : current_user.customer.where(user_id: current_user.id).compliants.count %><sup style="font-size: 20px"></sup></h3>
+            <h3><%= current_user.read_attribute_before_type_cast(:role) == 1 ? current_user.customer.compliants.count : current_user.customer.compliants.where(user_id: current_user.id).count %><sup style="font-size: 20px"></sup></h3>
             <p>All Complaints</p>
           </div>
           <div class="icon">
@@ -76,7 +76,7 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-danger">
           <div class="inner">
-            <h3><%= current_user.role == 1 ? current_user.customer.compliants.where.not(status: 3).count : current_user.customer.where(user_id: current_user.id).compliants.where.not(status: 3).count %></h3>
+            <h3><%= current_user.read_attribute_before_type_cast(:role) == 1 ? current_user.customer.compliants.where.not(status: 3).count : current_user.customer.compliants.where(user_id: current_user.id).where.not(status: 3).count %></h3>
             <p>Open Complaints</p>
           </div>
           <div class="icon">
@@ -91,7 +91,7 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-warning">
           <div class="inner">
-            <h3><%= current_user.role == 1 ? current_user.customer.compliants.where(status: 2).count : current_user.customer.where(user_id: current_user.id).compliants.where(status: 2).count %></h3>
+            <h3><%= current_user.read_attribute_before_type_cast(:role) == 1 ? current_user.customer.compliants.where(status: 2).count : current_user.customer.compliants.where(user_id: current_user.id, status: 2).count %></h3>
             <p>Resolved Complaints</p>
           </div>
           <div class="icon">

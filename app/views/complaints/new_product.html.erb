@@ -1,48 +1,48 @@
 <div class="card-body">
   <%= form_for(:product, url: create_product_path, method: 'POST', :html => { :id => 'create_product_form' }) do |f| %>
     <div class="row">
-      <label for="inputName2" class="col-sm-2 col-form-label">Customer</label>
+      <label for="inputName2" class="col-sm-2 col-form-label">Customer<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
         <div id='customer_div' name='product[customer_id]'></div>
       </div>
     </div>
 
     <div class="row">
-      <label for="inputName2" class="col-sm-2 col-form-label">Main Category</label>
+      <label for="inputName2" class="col-sm-2 col-form-label">Main Category<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
         <div id='main_category_div' name='product[category]'></div>
       </div>
     </div>
 
     <div class="row">
-      <label for="inputName2" class="col-sm-2 col-form-label">Sub Category</label>
+      <label for="inputName2" class="col-sm-2 col-form-label">Sub Category<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
         <div id='sub_category_div' name='product[category_id]'></div>
       </div>
     </div>
 
     <div class="row">
-      <label for="inputName" class="col-sm-2 col-form-label">Product Name</label>
+      <label for="inputName" class="col-sm-2 col-form-label">Product Name<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
         <%= f.text_field :product_name, autofocus: true, autocomplete: 'product_name', placeholder: 'Product Name', :required => true, class: 'form-control' %>
       </div>
     </div>
 
     <div class="row">
-      <label for="inputEmail" class="col-sm-2 col-form-label">Product Code</label>
+      <label for="inputEmail" class="col-sm-2 col-form-label">Product Code<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
         <%= f.text_field :product_code, autofocus: true, autocomplete: 'product_code', placeholder: 'Product Code', :required => true, class: 'form-control' %>
       </div>
     </div>
 
     <div class="row">
-      <label for="inputExperience" class="col-sm-2 col-form-label">Product Details</label>
+      <label for="inputExperience" class="col-sm-2 col-form-label">Product Details<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
       	<%= f.text_area :product_detail, autofocus: true, autocomplete: 'product_detail', placeholder: 'Product Details', :rows => 2, :required => true, class: 'form-control'%>
       </div>
     </div>
 
-    <div class="row">
+    <div class="row ">
       <div class="offset-sm-2 col-sm-10">
       	<%= f.submit 'Submit', class: 'btn btn-primary' %>
       </div>

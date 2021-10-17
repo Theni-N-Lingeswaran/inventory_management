@@ -6,7 +6,7 @@ class ComplaintsController < ApplicationController
   before_action :check_valid_token, unless: :devise_controller?, except: []
 
   def index
-    @all_complaints = current_user.role == 1 ? current_user.customer.compliants : current_user.customer.where(user_id: current_user.id).compliants
+    @all_complaints = current_user.read_attribute_before_type_cast(:role) ? current_user.customer.compliants : current_user.customer.compliants.where(user_id: current_user.id)
   end
 
   def new_product

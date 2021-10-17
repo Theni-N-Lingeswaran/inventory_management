@@ -7,13 +7,13 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
-
-  has_one_attached :profile_picture
-  has_many :password_histroies
-  has_many :linked_customers
+  has_one_attached :profile_picture, dependent: :destroy
+  has_many :password_histroies, class_name: :PasswordHistroy, dependent: :destroy
+  has_many :linked_customers, dependent: :destroy
   has_many :customers, through: :linked_customers
-  has_many :compliants
-  belongs_to :customer, foreign_key: :current_company_id
+  has_many :compliants, dependent: :destroy
+  belongs_to :customer, foreign_key: :current_company_id, dependent: :destroy, optional: true
+  enum role: { Super_admin: 0, Admin: 1, Employee: 2, Customer: 3 }, _prefix: true
 
   def self.find_for_database_authentication(warden_condition)
     conditions = warden_condition.dup

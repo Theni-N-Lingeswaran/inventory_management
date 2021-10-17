@@ -5,28 +5,28 @@
     <%= f.hidden_field :company_id, value: current_user.current_company_id %>
 
     <div class="row">
-      <label for="inputName" class="col-sm-2 col-form-label">Customer Name</label>
+      <label for="inputName" class="col-sm-2 col-form-label">Customer Name<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
         <%= f.text_field :customer_name, autofocus: true, autocomplete: 'customer_name', placeholder: 'Customer Name', :required => true, class: 'form-control' %>
       </div>
     </div>
 
     <div class="row">
-      <label for="inputEmail" class="col-sm-2 col-form-label">Customer Phone</label>
+      <label for="inputEmail" class="col-sm-2 col-form-label">Customer Phone<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
         <%= f.text_field :customer_phone, autofocus: true, autocomplete: 'customer_phone', placeholder: 'Customer Phone', :required => true, class: 'form-control' %>
       </div>
     </div>
 
     <div class="row">
-      <label for="inputName2" class="col-sm-2 col-form-label">Customer Email</label>
+      <label for="inputName2" class="col-sm-2 col-form-label">Customer Email<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
       	<%= f.text_field :customer_email, autofocus: true, autocomplete: 'customer_email', placeholder: 'Customer Email', :required => true, class: 'form-control' %>
       </div>
     </div>
 
     <div class="row">
-      <label for="inputExperience" class="col-sm-2 col-form-label">Customer Address</label>
+      <label for="inputExperience" class="col-sm-2 col-form-label">Customer Address<span class="text-danger">*</span></label>
       <div class="form-group col-sm-10">
       	<%= f.text_area :customer_address, autofocus: true, autocomplete: 'customer_address', placeholder: 'Customer Address', :rows => 3, :required => true, class: 'form-control'%>
       </div>

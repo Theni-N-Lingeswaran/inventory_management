@@ -27,8 +27,8 @@
   <body class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed hold-transition text-sm">
     <div class="wrapper">
       <div class="preloader flex-column justify-content-center align-items-center">
-        <%if current_user.customers&.last&.customer_logo&.attached?%>
-          <%= image_tag url_for(current_user.customers.last.customer_logo), style: 'height:60px; width:60px;'%>
+        <%if current_user.customer&.customer_logo&.attached?%>
+          <%= image_tag url_for(current_user.customer.customer_logo), style: 'height:60px; width:60px;'%>
         <%else%>
           <img class="animation__wobble" src="/assets/logo.png" alt="LoadingLogo" height="60" width="60">
         <%end%>
@@ -137,13 +137,13 @@
 
       <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="<%= current_user.role == 1 ? company_profile_path(current_user.token) : user_details_path%>" class="brand-link">
-          <%if current_user.customers.last&.customer_logo&.attached?%>
-            <%= image_tag url_for(current_user.customers.last.customer_logo), class: 'brand-image img-circle elevation-3', style: 'opacity: .8'%>
+        <a href="<%= current_user.read_attribute_before_type_cast(:role) == 1 ? company_profile_path(current_user.token) : user_details_path%>" class="brand-link">
+          <%if current_user.customer&.customer_logo&.attached?%>
+            <%= image_tag url_for(current_user.customer.customer_logo), class: 'brand-image img-circle elevation-3', style: 'opacity: .8'%>
           <%else%>
             <img src="/assets/logo.png" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
           <%end%>
-          <span class="brand-text font-weight-light"><%=current_user.customers.last&.customer_name&.titleize%></span>
+          <span class="brand-text font-weight-light"><%=current_user.customer&.customer_name&.titleize%></span>
         </a>
 
         <!-- Sidebar -->
@@ -151,7 +151,6 @@
           <!-- Sidebar user panel (optional) -->
           <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-
               <%if current_user.profile_picture.attached?%>
                 <%= image_tag url_for(current_user.profile_picture), class: 'img-circle elevation-2'%>
               <%else%>
@@ -178,9 +177,10 @@
           <!-- Sidebar Menu -->
           <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-              <% @side_panel_links = SidePanelLink.all.select{|main| main.link_for.include?(current_user.role) && main.parent_link_id == nil}
+              <% user_role = current_user.read_attribute_before_type_cast(:role)
+              @side_panel_links = SidePanelLink.all.select{|main| main.link_for.include?(user_role) && main.parent_link_id == nil}
               @side_panel_links.each do |side_panel_main_links|
-                @side_panel_sub_links = side_panel_main_links.side_panel_sub_links.select{|sub_link| sub_link.link_for.include?(current_user.role)}
+                @side_panel_sub_links = side_panel_main_links.side_panel_sub_links.select{|sub_link| sub_link.link_for.include?(user_role)}
                 current_url_path = request.fullpath&.split('/')[1]
                 active_link = ''
                 if (['admin_home', 'employee_home', 'customer_home'].include?(current_url_path) && side_panel_main_links.id == 1) || side_panel_main_links.link_url.include?(request.path_parameters[:action]) == true

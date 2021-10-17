@@ -216,13 +216,13 @@ module Devise
         # stored_location_for(resource_or_scope) || signed_in_root_path(resource_or_scope)
         case resource_or_scope.read_attribute_before_type_cast(:role)
         when 0
-          redirect_to super_admin_home_path(resource_or_scope.token)
+          super_admin_home_path(resource_or_scope.token)
         when 1
-          redirect_to admin_home_path(resource_or_scope.token)
+          admin_home_path(resource_or_scope.token)
         when 2
-          redirect_to employee_home_path(resource_or_scope.token)
+          employee_home_path(resource_or_scope.token)
         when 3
-          redirect_to customer_home_path(resource_or_scope.token)
+          customer_home_path(resource_or_scope.token)
         end
       end
 

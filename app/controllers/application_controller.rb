@@ -2,8 +2,16 @@
 
 class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
+  protect_from_forgery
+
+  layout :determine_layout
 
   private
+
+  def determine_layout
+    module_name = self.class.to_s.split("::").first
+    return (['Devise', 'Users'].include?(module_name) ? "devise" : "application")
+  end
 
   def check_linked_customer
     if current_user.active != true

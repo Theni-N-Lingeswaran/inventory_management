@@ -214,12 +214,15 @@ module Devise
       #
       def after_sign_in_path_for(resource_or_scope)
         # stored_location_for(resource_or_scope) || signed_in_root_path(resource_or_scope)
-        if resource_or_scope.role == 1
-          admin_home_path(resource_or_scope.token)
-        elsif resource_or_scope.role == 2
-          employee_home_path(resource_or_scope.token)
-        elsif resource_or_scope.role == 3
-          customer_home_path(resource_or_scope.token)
+        case resource_or_scope.read_attribute_before_type_cast(:role)
+        when 0
+          redirect_to super_admin_home_path(resource_or_scope.token)
+        when 1
+          redirect_to admin_home_path(resource_or_scope.token)
+        when 2
+          redirect_to employee_home_path(resource_or_scope.token)
+        when 3
+          redirect_to customer_home_path(resource_or_scope.token)
         end
       end
 

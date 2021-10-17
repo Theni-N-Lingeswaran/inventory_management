@@ -1,113 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Sign In</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link rel="stylesheet" href="/assets/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/adminlte.css">
-  </head>
-  <body class="hold-transition login-page custom-bg-image">
-    <div class="login-box" style="margin-left:750px; text-align: center;">
-      <div class="card card-outline card-primary">
-        <div class="card-header text-center">
-          <img src="/assets/logo.png" alt="Company Logo" style="height:auto; width:95px;">
-        </div>
-        <div class="card-body">
-          <p class="login-box-msg">Sign in to start your session</p>
-          <!-- <p class="notice"><%#= notice %></p> -->
-          <%if alert%>
-            <span class="alert"><%= alert %></span>
-          <%end%>
-          <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-            <div class="form-group input-group mb-3">
-              <%= f.text_field :mobile_or_email, autofocus: true, autocomplete: 'mobile_or_email', placeholder: 'Contact Number or Email', class: 'form-control' %>
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-address-book"></span>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group input-group mb-3">
-              <%= f.password_field :password, autocomplete: 'password', placeholder: 'Password', class: 'form-control' %>
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-lock"></span>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-8">
-                <div class="icheck-primary">
-                  <%= f.check_box :remember_me, include_hidden: false, checked: devise_mapping.rememberable? ? "checked" : nil %>
-                  <%= f.label :remember_me, for:'user_remember_me' %>
-                </div>
-              </div>
-              <div class="col-4">
-                <%= f.submit 'Log in', class: 'btn btn-primary btn-block' %>
-              </div>
-            </div>
-          <% end %>
-          <!-- <div class="social-auth-links text-center mt-2 mb-3">
-            <a href="#" class="btn btn-block btn-primary">
-              <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-            </a>
-            <a href="#" class="btn btn-block btn-danger">
-              <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-            </a>
-          </div> -->
-          <%= render "devise/shared/links" %>
+<div class="card card-outline card-primary">
+  <div class="card-header text-center">
+    <img src="/assets/logo.png" alt="Company Logo" style="height:auto; width:95px;">
+  </div>
+  <div class="card-body">
+    <p class="login-box-msg">Sign in to start your session</p>
+    <!-- <p class="notice"><%#= notice %></p> -->
+    <%if alert%>
+      <span class="alert"><%= alert %></span>
+    <%end%>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="form-group input-group mb-3">
+        <%= f.text_field :mobile_or_email, autofocus: true, autocomplete: 'mobile_or_email', placeholder: 'Contact Number or Email', class: 'form-control' %>
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <span class="fas fa-address-book"></span>
+          </div>
         </div>
       </div>
-  </div>
-  </body>
-  <script src="/assets/plugins/jquery/jquery.min.js"></script>
-  <script src="/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="/assets/adminlte.min.js"></script>
-  <script src="/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
-  <script src="/assets/plugins/jquery-validation/additional-methods.min.js"></script>
 
-  <script>
-    $(function () {
-      $.validator.setDefaults({
-        submitHandler: function (form) {
-          form.submit()
-        }
-      });
-      $('#new_user').validate({
-        rules: {
-          'user[mobile_or_email]': {
-            required: true,
-            check_valid_input: false
-          },
-          'user[password]': {
-            required: true
-          }
-        },
-        messages: {
-          'user[mobile_or_email]': {
-            required: "Please enter a mobile or email address",
-            check_valid_input: "Please enter a vaild mobile or email address"
-          },
-          'user[password]': {
-            required: "Please provide a password"
-          }
-        },
-        errorElement: 'div',
-        errorPlacement: function (error, element) {
-          error.addClass('invalid-feedback');
-          element.closest('.form-group').append(error);
-        },
-        highlight: function (element, errorClass, validClass) {
-          $(element).addClass('is-invalid');
-        },
-        unhighlight: function (element, errorClass, validClass) {
-          $(element).removeClass('is-invalid');
-        }
-      });
+      <div class="form-group input-group mb-3">
+        <%= f.password_field :password, autocomplete: 'password', placeholder: 'Password', class: 'form-control' %>
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <span class="fas fa-lock"></span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8">
+          <div class="icheck-primary">
+            <%= f.check_box :remember_me, include_hidden: false, checked: devise_mapping.rememberable? ? "checked" : nil %>
+            <%= f.label :remember_me, for:'user_remember_me' %>
+          </div>
+        </div>
+        <div class="col-4">
+          <%= f.submit 'Log in', class: 'btn btn-primary btn-block' %>
+        </div>
+      </div>
+    <% end %>
+    <!-- <div class="social-auth-links text-center mt-2 mb-3">
+      <a href="#" class="btn btn-block btn-primary">
+        <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
+      </a>
+      <a href="#" class="btn btn-block btn-danger">
+        <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+      </a>
+    </div> -->
+    <%= render "devise/shared/links" %>
+  </div>
+</div>
+
+<script>
+  $(function () {
+    $.validator.setDefaults({
+      submitHandler: function (form) {
+        form.submit()
+      }
     });
-  </script>
-</html>
+    $('#new_user').validate({
+      rules: {
+        'user[mobile_or_email]': {
+          required: true,
+          check_valid_input: false
+        },
+        'user[password]': {
+          required: true
+        }
+      },
+      messages: {
+        'user[mobile_or_email]': {
+          required: "Please enter a mobile or email address",
+          check_valid_input: "Please enter a vaild mobile or email address"
+        },
+        'user[password]': {
+          required: "Please provide a password"
+        }
+      },
+      errorElement: 'div',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+      }
+    });
+  });
+</script>
